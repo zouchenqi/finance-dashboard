@@ -308,31 +308,7 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
     </div>
   </div>
 
-  <!-- ⑦ 市场情绪 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">🧠</div>
-    <span class="sec-title">今日市场情绪</span>
-    <span class="sec-badge">AI</span>
-    <div class="sec-line"></div>
-  </div>
-  <div id="sentimentBox"><div class="loading"><div class="spinner"></div>AI 分析中...</div></div>
-
-  <!-- ⑧ 新闻 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">📰</div>
-    <span class="sec-title">今日要闻摘要</span>
-    <span class="sec-badge">AI</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="tabs">
-    <button class="tab on" onclick="switchTab('all',this)">全部</button>
-    <button class="tab" onclick="switchTab('cls',this)">财联社</button>
-    <button class="tab" onclick="switchTab('xq',this)">雪球</button>
-    <button class="tab" onclick="switchTab('gl',this)">国际视野</button>
-  </div>
-  <div id="newsArea"><div class="loading"><div class="spinner"></div>AI 生成摘要中...</div></div>
-
-  <!-- ⑨ 财经日历 -->
+  <!-- ⑦ 财经日历 -->
   <div class="sec">
     <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">📅</div>
     <span class="sec-title">重要财经日历</span>
@@ -380,21 +356,12 @@ const AI_API='https://api.anthropic.com/v1/messages';
 const KEY_MKT='xy_last_market';
 const KEY_AI='xy_last_ai';
 
-// 多个代理轮询，提高成功率
-const PROXIES=[
-  s=>`https://api.allorigins.win/raw?url=${encodeURIComponent(s)}`,
-  s=>`https://corsproxy.io/?${encodeURIComponent(s)}`,
-  s=>`https://proxy.cors.sh/${s}`,
-];
+const PROXY=url=>`/api/proxy?url=${encodeURIComponent(url)}`;
 
 async function fetchWithProxy(url,opts={}){
-  for(const p of PROXIES){
-    try{
-      const r=await fetch(p(url),{signal:AbortSignal.timeout(10000),...opts});
-      if(r.ok)return r;
-    }catch{}
-  }
-  throw new Error('所有代理均失败');
+  const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000),...opts});
+  if(r.ok)return r;
+  throw new Error('请求失败');
 }
 
 document.getElementById('todayDate').textContent=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
@@ -745,7 +712,6 @@ async function loadAll(manual=false){
   const needAI=manual||getLast(KEY_AI)!==today;
   const tasks=[];
   if(needMkt)tasks.push(loadIndices(),loadCommodities(),loadFundFlow(),loadSectors(),loadLHB(),loadBlockTrade(),loadMargin(),loadWatchlist());
-  if(needAI)tasks.push(loadAI());
   if(tasks.length){
     await Promise.all(tasks);
     if(needMkt)setLast(KEY_MKT);
