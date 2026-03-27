@@ -382,10 +382,22 @@ async function loadFundFlow(){
   try{
     const j=await fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=');
     const d=j.data;
-    const last=a=>a?parseFloat(a.split(';').filter(Boolean).pop()?.split(',')[1]||0):0;
-    const sh=last(d.s2n),sz=last(d.s2s),tot=sh+sz;
+    // 数据是数组格式：["时间,买入,卖出,净流入", ...]
+    // 取最后一条有效数据（非"-"的那条）
+    const lastValid=arr=>{
+      if(!Array.isArray(arr))return null;
+      for(let i=arr.length-1;i>=0;i--){
+        const parts=arr[i].split(',');
+        const v=parseFloat(parts[3]);
+        if(!isNaN(v))return v;
+      }
+      return null;
+    };
+    const sh=lastValid(d.s2n);
+    const sz=lastValid(d.s2s);
+    const tot=(sh!=null&&sz!=null)?sh+sz:sh||sz;
     renderFlow(sh,sz,tot);
-  }catch{renderFlow(null,null,null);}
+  }catch(e){renderFlow(null,null,null);}
 }
 
 // ── A股成交额（直接请求东方财富）───────────────────────────────────
@@ -500,23 +512,20 @@ function renderMargin(d){
   </div>`).join('');
 }
 
-// ── 基金价格（JSONP直接请求）────────────────────────────────────────
+// ── 基金价格（走代理，正确路径+Referer）──────────────────────────
 async function fetchFundPrice(code){
-  return new Promise((resolve)=>{
-    const cb='cb_'+Date.now();
-    const s=document.createElement('script');
-    s.src=`https://fundgz.1234567.com.cn/z/sz/${code}.js?callback=${cb}&rt=${Date.now()}`;
-    window[cb]=d=>{
-      document.head.removeChild(s);
-      delete window[cb];
-      const price=parseFloat(d.gsz)||0;
-      const prev=parseFloat(d.dwjz)||price;
-      const pct=parseFloat(d.gszzl)||0;
-      resolve({price,prev,chg:price-prev,pct});
-    };
-    s.onerror=()=>{document.head.removeChild(s);delete window[cb];resolve(null);};
-    document.head.appendChild(s);
-  });
+  try{
+    const url=`https://fundgz.1234567.com.cn/js/${code}.js?rt=${Date.now()}`;
+    const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(8000)});
+    const txt=await r.text();
+    const m=txt.match(/jsonpgz\((.*)\)/);
+    if(!m||!m[1])return null;
+    const d=JSON.parse(m[1]);
+    const price=parseFloat(d.gsz)||0;
+    const prev=parseFloat(d.dwjz)||price;
+    const pct=parseFloat(d.gszzl)||0;
+    return{price,prev,chg:price-prev,pct};
+  }catch{return null;}
 }
 
 // ── 自选股────────────────────────────────────────────────────────────
