@@ -326,19 +326,14 @@ async function saveCache(key,val){
       headers:{...sbH,'Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify({key,value:JSON.stringify(val),updated_at:new Date().toISOString()})
     });
-  }catch{}
+  }catch(e){}
 }
 async function loadCache(key){
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/cache?key=eq.${key}&select=value`,{headers:sbH});
+    const r=await fetch(`${SB_URL}/rest/v1/cache?key=eq.${encodeURIComponent(key)}&select=value`,{headers:sbH});
     const j=await r.json();
-    return j[0]?.value?JSON.parse(j[0].value):null;
-  }catch{return null;}
-}
-async function withCache(key,freshVal){
-  if(freshVal!=null){saveCache(key,freshVal);return{val:freshVal,cached:false};}
-  const c=await loadCache(key);
-  return c!=null?{val:c,cached:true}:{val:null,cached:false};
+    return (j&&j[0]&&j[0].value)?JSON.parse(j[0].value):null;
+  }catch(e){return null;}
 }────
 async function fetchEM(url){
   const r=await fetch(url,{signal:AbortSignal.timeout(10000),headers:{'Referer':'https://www.eastmoney.com/','User-Agent':'Mozilla/5.0'}});
@@ -403,7 +398,7 @@ async function loadFundFlow(){
   try{
     const j=await fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=');
     const d=j.data;
-    const lastValid=arr=>{
+    const lastValid=function(arr){
       if(!Array.isArray(arr))return null;
       for(let i=arr.length-1;i>=0;i--){
         const v=parseFloat(arr[i].split(',')[3]);
@@ -413,19 +408,19 @@ async function loadFundFlow(){
     };
     const sh=lastValid(d.s2n);
     const sz=lastValid(d.s2s);
-    const tot=(sh!=null&&sz!=null)?sh+sz:(sh??sz);
-    // 缓存有效值
+    const tot=(sh!=null&&sz!=null)?sh+sz:(sh!=null?sh:(sz!=null?sz:null));
     if(sh!=null)saveCache('flow_sh',sh);
     if(sz!=null)saveCache('flow_sz',sz);
     if(tot!=null)saveCache('flow_tot',tot);
-    renderFlow(
-      sh??await loadCache('flow_sh'),
-      sz??await loadCache('flow_sz'),
-      tot??await loadCache('flow_tot'),
-      sh==null
-    );
-  }catch{
-    renderFlow(await loadCache('flow_sh'),await loadCache('flow_sz'),await loadCache('flow_tot'),true);
+    const cSh=sh!=null?sh:await loadCache('flow_sh');
+    const cSz=sz!=null?sz:await loadCache('flow_sz');
+    const cTot=tot!=null?tot:await loadCache('flow_tot');
+    renderFlow(cSh,cSz,cTot,sh==null);
+  }catch(e){
+    const cSh=await loadCache('flow_sh');
+    const cSz=await loadCache('flow_sz');
+    const cTot=await loadCache('flow_tot');
+    renderFlow(cSh,cSz,cTot,true);
   }
 }
 
@@ -531,23 +526,24 @@ async function loadMargin(){
     const url='https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPTA_RZRQ_LSHJ&columns=ALL&source=WEB&sortColumns=DIM_DATE&sortTypes=-1&pageNumber=1&pageSize=1';
     const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
     const j=await r.json();
-    const d=j.result?.data?.[0];
+    const d=(j.result&&j.result.data&&j.result.data[0])?j.result.data[0]:null;
     if(d){
-      saveCache('margin',{rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE});
-      renderMargin({rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE},false);
+      const obj={rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE};
+      saveCache('margin',obj);
+      renderMargin(obj,false);
     } else {
       renderMargin(await loadCache('margin'),true);
     }
-  }catch{renderMargin(await loadCache('margin'),true);}
+  }catch(e){renderMargin(await loadCache('margin'),true);}
 }
-function renderMargin(d,fromCache=false){
-  const tag=fromCache&&d?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">最新</span>':'';
-  const items=[{l:'融资余额',dot:'#f59e0b',v:d?.rz},{l:'融券余额',dot:'#ef4444',v:d?.rq},{l:'融资融券合计',dot:'#8b5cf6',v:d?.tot}];
-  document.getElementById('marginGrid').innerHTML=items.map(f=>`<div class="card">
-    <div class="flow-lbl"><span class="flow-dot" style="background:${f.dot};box-shadow:0 0 6px ${f.dot}66"></span>${f.l}${tag}</div>
-    <div class="flow-val" style="color:#111827">${f.v==null?'--':fmt(f.v/100000000,0)+'亿'}</div>
-    <div class="flow-sub">${f.v==null?'暂无数据':'余额数据'}</div>
-  </div>`).join('');
+function renderMargin(d,fromCache){
+  const tag=(fromCache&&d)?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">最新</span>':'';
+  const items=[{l:'融资余额',dot:'#f59e0b',v:d?d.rz:null},{l:'融券余额',dot:'#ef4444',v:d?d.rq:null},{l:'融资融券合计',dot:'#8b5cf6',v:d?d.tot:null}];
+  document.getElementById('marginGrid').innerHTML=items.map(function(f){return '<div class="card">'+
+    '<div class="flow-lbl"><span class="flow-dot" style="background:'+f.dot+';box-shadow:0 0 6px '+f.dot+'66"></span>'+f.l+tag+'</div>'+
+    '<div class="flow-val" style="color:#111827">'+(f.v==null?'--':fmt(f.v/100000000,0)+'亿')+'</div>'+
+    '<div class="flow-sub">'+(f.v==null?'暂无数据':'余额数据')+'</div>'+
+  '</div>';}).join('');
 }
 
 // ── 基金价格（走代理，正确路径+Referer）──────────────────────────
