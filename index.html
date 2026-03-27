@@ -9,8 +9,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;min-height:100vh}
 body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f8;color:#1a202c}
-
-/* ── Header ── */
 .header{width:100%;background:linear-gradient(135deg,#0f2460 0%,#1a3fa0 45%,#2563eb 80%,#3b82f6 100%);padding:0 64px;height:72px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(15,36,96,.35);position:sticky;top:0;z-index:100;overflow:hidden}
 .header::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
 .header-left{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
@@ -20,40 +18,21 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .header-right{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
 .pill{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
 .upd-time{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;text-align:center}
-
-/* ── Container ── */
 .wrap{width:100%;max-width:1400px;margin:0 auto;padding:32px 48px}
-
-/* ── Section header ── */
 .sec{display:flex;align-items:center;gap:10px;margin:32px 0 16px}
 .sec:first-child{margin-top:0}
 .sec-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .sec-title{font-size:11px;font-weight:800;color:#374151;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
 .sec-line{flex:1;height:1px;background:linear-gradient(90deg,#e0e7ff,transparent)}
-.sec-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed;border:1px solid #c4b5fd;white-space:nowrap}
-
-/* ── Refresh divider ── */
-.refresh-divider{display:flex;align-items:center;gap:16px;margin:24px 0}
-.refresh-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,#c7d2fe)}
-.refresh-divider-line.r{background:linear-gradient(90deg,#c7d2fe,transparent)}
-.big-refresh-btn{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(79,70,229,.35);transition:all .25s;letter-spacing:.3px;white-space:nowrap}
-.big-refresh-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,.45)}
-.big-refresh-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* ── Cards ── */
 .card{background:#fff;border:1px solid #e8ecf4;border-radius:16px;padding:18px 20px;transition:all .22s;box-shadow:0 2px 8px rgba(99,102,241,.05)}
 .card:hover{box-shadow:0 6px 24px rgba(99,102,241,.1);transform:translateY(-2px);border-color:#c7d2fe}
-
-/* ── Grids ── */
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-@media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.g4,.g3,.g2{grid-template-columns:1fr}.wrap{padding:20px 20px}.header{padding:0 20px}}
-
-/* ── Index card ── */
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.g4,.g3,.g2,.g5{grid-template-columns:1fr}.wrap{padding:20px 16px}.header{padding:0 20px}}
 .idx-flag{font-size:10px;color:#9ca3af;margin-bottom:4px}
-.idx-name{font-size:13px;font-weight:700;color:#374151}
 .idx-val{font-size:26px;font-weight:800;margin:8px 0 5px;letter-spacing:-1px;line-height:1}
 .idx-chg{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:7px}
 .idx-prev{font-size:10px;color:#9ca3af;margin-top:8px}
@@ -66,29 +45,20 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .down-bg .idx-val{color:#b91c1c}
 .down-bg .idx-chg{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#991b1b}
 .flat-bg .idx-chg{background:#f3f4f6;color:#374151}
-
-/* ── Skeleton ── */
 .sk{background:linear-gradient(90deg,#f3f4f6 25%,#e9ecf3 50%,#f3f4f6 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
 .sk-h{height:28px;width:65%}.sk-s{height:12px;width:38%;margin-top:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* ── Flow cards ── */
 .flow-lbl{font-size:11px;font-weight:700;color:#6b7280;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .flow-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .flow-val{font-size:22px;font-weight:800}
 .flow-sub{font-size:10px;color:#9ca3af;margin-top:3px}
 .flow-track{height:5px;background:#f0f2f8;border-radius:3px;margin-top:12px;overflow:hidden}
 .flow-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
-
-/* ── Watchlist collapse ── */
 .wl-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;width:100%;background:none;border:none;padding:0;margin:32px 0 0}
-.wl-toggle .sec-title{text-align:left}
-.wl-chevron{font-size:11px;color:#9ca3af;transition:transform .25s;margin-left:auto}
+.wl-chevron{font-size:11px;color:#9ca3af;transition:transform .25s;margin-left:4px}
 .wl-chevron.open{transform:rotate(180deg)}
 .wl-body{overflow:hidden;transition:max-height .35s ease,opacity .3s ease;max-height:800px;opacity:1;margin-top:14px}
 .wl-body.collapsed{max-height:0;opacity:0;margin-top:0}
-
-/* ── Tables ── */
 .tbl-wrap{background:#fff;border:1px solid #e8ecf4;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(99,102,241,.05)}
 .tbl{width:100%;border-collapse:collapse}
 .tbl th{font-size:10px;font-weight:800;color:#9ca3af;letter-spacing:.8px;text-transform:uppercase;padding:11px 16px;background:linear-gradient(180deg,#f9fafb,#f4f6fb);border-bottom:1px solid #f0f2f8;text-align:left}
@@ -101,34 +71,12 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .pill-tag.flat{background:#f3f4f6;color:#374151}
 .bar-wrap{width:56px;height:4px;display:inline-block;vertical-align:middle;margin-left:8px;background:#f0f2f8;border-radius:2px;overflow:hidden}
 .bar-fill{height:100%;border-radius:2px}
-
-/* ── News ── */
-.tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
-.tab{background:#fff;border:1px solid #e8ecf4;color:#6b7280;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
-.tab:hover{border-color:#a5b4fc;color:#4f46e5}
-.tab.on{background:linear-gradient(135deg,#4f46e5,#2563eb);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(79,70,229,.3)}
-.news-grid{display:flex;flex-direction:column;gap:10px}
-.news-card{background:#fff;border:1px solid #e8ecf4;border-radius:14px;padding:15px 18px;transition:all .2s}
-.news-card:hover{border-color:#c7d2fe;box-shadow:0 3px 14px rgba(99,102,241,.1);transform:translateY(-1px)}
-.ntag{display:inline-flex;font-size:10px;font-weight:800;padding:2px 9px;border-radius:5px;margin-bottom:7px;letter-spacing:.5px}
-.t-cls{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d}
-.t-xq{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8}
-.t-gl{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309}
-.news-ttl{font-size:13px;font-weight:600;color:#111827;line-height:1.6;margin-bottom:5px}
-.news-meta{font-size:11px;color:#9ca3af}
-
-/* ── Sentiment ── */
-.sentiment-wrap{background:#fff;border:1px solid #e8ecf4;border-radius:16px;padding:22px 24px;box-shadow:0 2px 8px rgba(99,102,241,.05)}
-.sentiment-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
-.sentiment-lbl{font-size:24px;font-weight:800;color:#1a202c}
-.sentiment-sub{font-size:11px;color:#9ca3af;margin-top:2px}
-.sentiment-num{font-size:13px;font-weight:700;color:#4f46e5;background:linear-gradient(135deg,#ede9fe,#ddd6fe);padding:6px 14px;border-radius:9px;border:1px solid #c4b5fd}
-.meter-wrap{position:relative;height:10px;background:linear-gradient(90deg,#fca5a5 0%,#fde68a 40%,#6ee7b7 80%,#34d399 100%);border-radius:5px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.meter-thumb{width:18px;height:18px;background:#fff;border:3px solid #4f46e5;border-radius:50%;position:absolute;top:-4px;transform:translateX(-50%);box-shadow:0 2px 10px rgba(79,70,229,.4);transition:left 1s ease}
-.meter-labels{display:flex;justify-content:space-between;font-size:10px;color:#9ca3af;margin-bottom:16px}
-.sentiment-text{font-size:13px;color:#374151;line-height:1.75;background:linear-gradient(135deg,#f8f7ff,#f0f0ff);border-radius:10px;padding:14px 16px;border-left:3px solid #4f46e5}
-
-/* ── Calendar ── */
+.refresh-divider{display:flex;align-items:center;gap:16px;margin:24px 0}
+.rdl{flex:1;height:1px;background:linear-gradient(90deg,transparent,#c7d2fe)}
+.rdr{flex:1;height:1px;background:linear-gradient(90deg,#c7d2fe,transparent)}
+.big-btn{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff;border:none;padding:12px 32px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(79,70,229,.35);transition:all .25s;white-space:nowrap;font-family:inherit}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,.45)}
+.big-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .cal-list{display:flex;flex-direction:column;gap:10px}
 .cal-item{background:#fff;border:1px solid #e8ecf4;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:16px;transition:all .2s}
 .cal-item:hover{border-color:#c7d2fe}
@@ -146,22 +94,14 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .cal-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;white-space:nowrap}
 .b-high{background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#7c3aed}
 .b-med{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8}
-
-/* ── Watchlist tags ── */
 .wl-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
 .type-stock{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8}
 .type-fund{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d}
-
-/* ── Buttons ── */
 .btn{border:none;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
-.btn-primary{background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.25)}
-.btn-primary:hover{box-shadow:0 4px 14px rgba(79,70,229,.4);transform:translateY(-1px)}
-.btn-ghost{background:#fff;border:1px solid #e8ecf4;color:#374151}
-.btn-ghost:hover{border-color:#a5b4fc;color:#4f46e5}
+.btn-primary{background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff}
+.btn-ghost{background:#fff;border:1px solid #e8ecf4;color:#374151}.btn-ghost:hover{border-color:#a5b4fc;color:#4f46e5}
 .btn-danger{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;border:1px solid #fca5a5}
 .btn-sm{padding:4px 11px;font-size:11px;border-radius:6px}
-
-/* ── Modal ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center}
 .modal-bg.show{display:flex}
 .modal{background:#fff;border-radius:20px;padding:30px;width:360px;box-shadow:0 24px 64px rgba(0,0,0,.18);border:1px solid #e8ecf4}
@@ -171,18 +111,20 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .modal input:focus,.modal select:focus{border-color:#6366f1;background:#fff;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
 .modal-err{font-size:11px;color:#dc2626;margin-bottom:11px;background:#fff1f2;padding:8px 12px;border-radius:7px;display:none;border-left:3px solid #fca5a5}
-
-/* ── Loading / Error ── */
 .loading{text-align:center;padding:36px;color:#9ca3af;font-size:12px}
 .spinner{width:24px;height:24px;border:2px solid #e8ecf4;border-top-color:#4f46e5;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .err-box{background:#fff1f2;border:1px solid #fecaca;border-radius:10px;padding:11px 15px;font-size:12px;color:#dc2626;margin:12px;border-left:3px solid #f87171}
-
 .footer{text-align:center;padding:24px 0 36px;font-size:11px;color:#9ca3af;width:100%}
+/* VIX special */
+.vix-card{position:relative;overflow:hidden}
+.vix-level{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;display:inline-block;margin-top:6px}
+.vix-low{background:#d1fae5;color:#065f46}
+.vix-mid{background:#fef3c7;color:#92400e}
+.vix-high{background:#fee2e2;color:#991b1b}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="header-left">
     <div class="logo">📊</div>
@@ -201,124 +143,125 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 
 <div class="wrap">
 
-  <!-- ① 指数行情 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">📈</div>
-    <span class="sec-title">指数行情</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="g4" id="idxGrid">
-    <div class="card"><div class="idx-name">上证指数</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">深证成指</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">标普500</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">离岸人民币</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-  </div>
+<!-- ① 指数行情 -->
+<div class="sec">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">📈</div>
+  <span class="sec-title">指数行情</span>
+  <div class="sec-line"></div>
+</div>
+<div class="g4" id="idxGrid">
+  <div class="card"><div class="idx-flag">🇨🇳 上证指数</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">🇨🇳 深证成指</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">🇺🇸 标普500</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">💱 离岸人民币</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+</div>
 
-  <!-- 刷新分隔带 -->
-  <div class="refresh-divider">
-    <div class="refresh-divider-line"></div>
-    <button class="big-refresh-btn" id="bigRefBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-      刷新全部数据
-    </button>
-    <div class="refresh-divider-line r"></div>
-  </div>
+<!-- ② 北向资金 + 成交量 -->
+<div class="sec">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">💰</div>
+  <span class="sec-title">北向资金 & 市场成交</span>
+  <div class="sec-line"></div>
+</div>
+<div class="g4" id="flowGrid">
+  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>沪股通净流入</div><div class="sk sk-h"></div></div>
+  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>深股通净流入</div><div class="sk sk-h"></div></div>
+  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>北向合计</div><div class="sk sk-h"></div></div>
+  <div class="card" id="volumeCard"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>A股今日成交额</div><div class="sk sk-h"></div></div>
+</div>
 
-  <!-- ② 自选股 -->
-  <button class="wl-toggle" onclick="toggleWl()">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a)">⭐</div>
-    <span class="sec-title">自选股 / 基金</span>
-    <div class="sec-line" style="flex:1;height:1px;background:linear-gradient(90deg,#e0e7ff,transparent);margin:0 10px"></div>
-    <span class="wl-chevron open" id="wlChevron">▼</span>
+<!-- 刷新按钮 -->
+<div class="refresh-divider">
+  <div class="rdl"></div>
+  <button class="big-btn" id="bigRefBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+    刷新全部数据
   </button>
-  <div class="wl-body" id="wlBody">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openWlModal()">+ 添加</button>
-      <span style="font-size:11px;color:#9ca3af" id="wlStatus"></span>
-    </div>
-    <div class="tbl-wrap" id="wlCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  </div>
+  <div class="rdr"></div>
+</div>
 
-  <!-- ③ 大宗商品 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">🛢️</div>
-    <span class="sec-title">大宗商品</span>
-    <div class="sec-line"></div>
+<!-- ③ 自选股 -->
+<button class="wl-toggle" onclick="toggleWl()">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a)">⭐</div>
+  <span class="sec-title">自选股 / 基金</span>
+  <div class="sec-line" style="flex:1;height:1px;background:linear-gradient(90deg,#e0e7ff,transparent);margin:0 10px"></div>
+  <span class="wl-chevron open" id="wlChevron">▼</span>
+</button>
+<div class="wl-body" id="wlBody">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openWlModal()">+ 添加</button>
   </div>
-  <div class="g4" id="cmdGrid">
-    <div class="card"><div class="idx-name">黄金</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">白银</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">原油(WTI)</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-    <div class="card"><div class="idx-name">铜期货</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
-  </div>
+  <div class="tbl-wrap" id="wlCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
 
-  <!-- ④ 北向资金 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">💰</div>
-    <span class="sec-title">北向资金（今日）</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="g3" id="flowGrid">
-    <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>沪股通净流入</div><div class="sk sk-h"></div></div>
-    <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>深股通净流入</div><div class="sk sk-h"></div></div>
-    <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>北向合计</div><div class="sk sk-h"></div></div>
-  </div>
+<!-- ③ 大宗商品 + VIX + 成交量 -->
+<div class="sec">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">🛢️</div>
+  <span class="sec-title">大宗商品 & 市场情绪</span>
+  <div class="sec-line"></div>
+</div>
+<div class="g5" id="cmdGrid">
+  <div class="card"><div class="idx-flag">🥇 黄金</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">🥈 白银</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">🛢️ 原油(WTI)</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card"><div class="idx-flag">🔶 铜期货</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+  <div class="card vix-card"><div class="idx-flag">😨 恐慌指数 VIX</div><div class="sk sk-h" style="margin-top:10px"></div><div class="sk sk-s"></div></div>
+</div>
 
-  <!-- ⑤ 板块 + 龙虎榜 -->
-  <div class="g2">
-    <div>
-      <div class="sec">
-        <div class="sec-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">🏭</div>
-        <span class="sec-title">A股热门板块</span>
-        <div class="sec-line"></div>
-      </div>
-      <div class="tbl-wrap" id="sectorCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+<!-- ④ 大宗商品 + VIX -->
+<div class="g2">
+  <div>
+    <div class="sec">
+      <div class="sec-icon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">🏭</div>
+      <span class="sec-title">A股热门板块</span>
+      <div class="sec-line"></div>
     </div>
-    <div>
-      <div class="sec">
-        <div class="sec-icon" style="background:linear-gradient(135deg,#fdf4ff,#f3e8ff)">🐉</div>
-        <span class="sec-title">龙虎榜</span>
-        <div class="sec-line"></div>
-      </div>
-      <div class="tbl-wrap" id="lhbCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-    </div>
+    <div class="tbl-wrap" id="sectorCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
   </div>
-
-  <!-- ⑥ 大宗交易 + 融资融券 -->
-  <div class="g2">
-    <div>
-      <div class="sec">
-        <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">🏦</div>
-        <span class="sec-title">大宗交易</span>
-        <div class="sec-line"></div>
-      </div>
-      <div class="tbl-wrap" id="blockCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div>
+    <div class="sec">
+      <div class="sec-icon" style="background:linear-gradient(135deg,#fdf4ff,#f3e8ff)">🐉</div>
+      <span class="sec-title">龙虎榜</span>
+      <div class="sec-line"></div>
     </div>
-    <div>
-      <div class="sec">
-        <div class="sec-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">📊</div>
-        <span class="sec-title">融资融券余额</span>
-        <div class="sec-line"></div>
-      </div>
-      <div class="g3" id="marginGrid" style="grid-template-columns:1fr">
-        <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融资余额</div><div class="sk sk-h"></div></div>
-        <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融券余额</div><div class="sk sk-h"></div></div>
-        <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融资融券合计</div><div class="sk sk-h"></div></div>
-      </div>
+    <div class="tbl-wrap" id="lhbCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  </div>
+</div>
+
+<!-- ⑥ 大宗交易 + 融资融券 -->
+<div class="g2">
+  <div>
+    <div class="sec">
+      <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">🏦</div>
+      <span class="sec-title">大宗交易</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="tbl-wrap" id="blockCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  </div>
+  <div>
+    <div class="sec">
+      <div class="sec-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">📊</div>
+      <span class="sec-title">融资融券余额</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="g3" id="marginGrid" style="grid-template-columns:1fr">
+      <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融资余额</div><div class="sk sk-h"></div></div>
+      <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融券余额</div><div class="sk sk-h"></div></div>
+      <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>融资融券合计</div><div class="sk sk-h"></div></div>
     </div>
   </div>
+</div>
 
-  <!-- ⑦ 财经日历 -->
-  <div class="sec">
-    <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">📅</div>
-    <span class="sec-title">重要财经日历</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="cal-list" id="calList"></div>
+<!-- ⑦ 财经日历 -->
+<div class="sec">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">📅</div>
+  <span class="sec-title">重要财经日历</span>
+  <div class="sec-line"></div>
+</div>
+<div class="cal-list" id="calList"></div>
 
 </div>
 
-<div class="footer">数据来源：Yahoo Finance · 东方财富 · Claude AI &nbsp;·&nbsp; 行情延迟约15分钟 &nbsp;·&nbsp; 新闻由 AI 生成仅供参考</div>
+<div class="footer">数据来源：Yahoo Finance · 东方财富 · 天天基金 &nbsp;·&nbsp; 行情延迟约15分钟 &nbsp;·&nbsp; 仅供参考</div>
 
 <!-- Password Modal -->
 <div class="modal-bg" id="pwModal">
@@ -334,8 +277,6 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
     </div>
   </div>
 </div>
-
-<!-- Delete Modal -->
 <div class="modal-bg" id="delModal">
   <div class="modal">
     <h3>确认移除</h3>
@@ -352,17 +293,9 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 const SB_URL='https://mqdioladvuqzsvcbjbzz.supabase.co';
 const SB_KEY='sb_publishable_x2kfIbbWsovbhIeYNl34vg_3Oa0NvYd';
 const EDIT_PW='xingyu';
-const AI_API='https://api.anthropic.com/v1/messages';
-const KEY_MKT='xy_last_market';
-const KEY_AI='xy_last_ai';
 
+// 代理只用于 Yahoo Finance（需要CORS）
 const PROXY=url=>`/api/proxy?url=${encodeURIComponent(url)}`;
-
-async function fetchWithProxy(url,opts={}){
-  const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000),...opts});
-  if(r.ok)return r;
-  throw new Error('请求失败');
-}
 
 document.getElementById('todayDate').textContent=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
@@ -374,19 +307,23 @@ const sbDel=async(t,id)=>fetch(`${SB_URL}/rest/v1/${t}?id=eq.${id}`,{method:'DEL
 const fmt=(n,d=2)=>n==null?'--':n.toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sgn=n=>n>0?'+':'';
 const cls=n=>n>0?'up':n<0?'down':'flat';
-const todayStr=()=>new Date().toISOString().slice(0,10);
-const getLast=k=>{try{return localStorage.getItem(k)||'';}catch{return '';}};
-const setLast=k=>{try{localStorage.setItem(k,todayStr());}catch{}};
 
-// ── Watchlist collapse ────────────────────────────────────────────────
-let wlOpen=true;
-function toggleWl(){
-  wlOpen=!wlOpen;
-  document.getElementById('wlBody').classList.toggle('collapsed',!wlOpen);
-  document.getElementById('wlChevron').classList.toggle('open',wlOpen);
+// ── Yahoo Finance（走代理）────────────────────────────────────────────
+async function fetchY(sym){
+  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
+  const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
+  const j=await r.json();
+  const m=j.chart.result[0].meta;
+  const chg=m.regularMarketPrice-m.chartPreviousClose;
+  return{price:m.regularMarketPrice,prev:m.chartPreviousClose,chg,pct:chg/m.chartPreviousClose*100};
 }
 
-// ── Yahoo Finance ─────────────────────────────────────────────────────
+// ── 东方财富（直接请求，支持CORS）────────────────────────────────────
+async function fetchEM(url){
+  const r=await fetch(url,{signal:AbortSignal.timeout(10000),headers:{'Referer':'https://www.eastmoney.com/','User-Agent':'Mozilla/5.0'}});
+  return r.json();
+}
+
 const INDICES=[
   {sym:'000001.SS',name:'上证指数',flag:'🇨🇳',dp:2},
   {sym:'399001.SZ',name:'深证成指',flag:'🇨🇳',dp:2},
@@ -400,17 +337,8 @@ const COMMS=[
   {sym:'HG=F',name:'铜期货',flag:'🔶',dp:3},
 ];
 
-async function fetchY(sym){
-  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
-  const r=await fetchWithProxy(url);
-  const j=await r.json();
-  const m=j.chart.result[0].meta;
-  const chg=m.regularMarketPrice-m.chartPreviousClose;
-  return{price:m.regularMarketPrice,prev:m.chartPreviousClose,chg,pct:chg/m.chartPreviousClose*100};
-}
-
 function mkCard(info,d){
-  if(!d)return`<div class="card"><div class="idx-flag">${info.flag}</div><div class="idx-name">${info.name}</div><div class="idx-val flat" style="font-size:16px;margin-top:8px">获取失败</div></div>`;
+  if(!d)return`<div class="card"><div class="idx-flag">${info.flag} ${info.name}</div><div class="idx-val flat" style="font-size:16px;margin-top:8px">获取失败</div></div>`;
   const c=cls(d.pct);
   return`<div class="card ${c}-bg">
     <div class="idx-flag">${info.flag} <span style="font-size:10px;color:#9ca3af">${info.name}</span></div>
@@ -425,24 +353,62 @@ async function loadIndices(){
   const res=await Promise.allSettled(INDICES.map(i=>fetchY(i.sym)));
   document.getElementById('idxGrid').innerHTML=INDICES.map((i,x)=>mkCard(i,res[x].status==='fulfilled'?res[x].value:null)).join('');
 }
+
 async function loadCommodities(){
-  const res=await Promise.allSettled(COMMS.map(i=>fetchY(i.sym)));
-  document.getElementById('cmdGrid').innerHTML=COMMS.map((i,x)=>mkCard(i,res[x].status==='fulfilled'?res[x].value:null)).join('');
+  const res=await Promise.allSettled([...COMMS.map(i=>fetchY(i.sym)),fetchY('^VIX')]);
+  const cmdHtml=COMMS.map((i,x)=>mkCard(i,res[x].status==='fulfilled'?res[x].value:null)).join('');
+  // VIX special card
+  const vd=res[4].status==='fulfilled'?res[4].value:null;
+  let vixHtml='';
+  if(!vd){
+    vixHtml=`<div class="card vix-card"><div class="idx-flag">😨 恐慌指数 VIX</div><div class="idx-val flat" style="font-size:16px;margin-top:8px">获取失败</div></div>`;
+  }else{
+    const v=vd.price;
+    const level=v<15?'低恐慌':v<25?'中等':v<35?'高恐慌':'极度恐慌';
+    const lvlCls=v<15?'vix-low':v<25?'vix-mid':'vix-high';
+    const c=cls(vd.pct);
+    vixHtml=`<div class="card vix-card ${c}-bg">
+      <div class="idx-flag">😨 <span style="font-size:10px;color:#9ca3af">恐慌指数 VIX</span></div>
+      <div class="idx-val">${fmt(v,2)}</div>
+      <span class="idx-chg ${c}">${c==='up'?'▲':c==='down'?'▼':'—'} ${sgn(vd.chg)}${fmt(vd.chg,2)} (${sgn(vd.pct)}${fmt(vd.pct,2)}%)</span>
+      <div class="vix-level ${lvlCls}">${level}</div>
+    </div>`;
+  }
+  document.getElementById('cmdGrid').innerHTML=cmdHtml+vixHtml;
 }
 
-// ── Fund Flow ─────────────────────────────────────────────────────────
+// ── 北向资金（直接请求东方财富）────────────────────────────────────
 async function loadFundFlow(){
   try{
-    const r=await fetchWithProxy('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5');
-    const j=await r.json();const d=j.data;
+    const j=await fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=');
+    const d=j.data;
     const last=a=>a?parseFloat(a.split(';').filter(Boolean).pop()?.split(',')[1]||0):0;
     const sh=last(d.s2n),sz=last(d.s2s),tot=sh+sz;
     renderFlow(sh,sz,tot);
   }catch{renderFlow(null,null,null);}
 }
+
+// ── A股成交额（直接请求东方财富）───────────────────────────────────
+async function loadVolume(){
+  try{
+    const j=await fetchEM('https://push2.eastmoney.com/api/qt/stock/get?secid=1.000001&fields=f6&ut=fa5fd1943c7b386f172d6893dbfba10b');
+    const vol=j.data?.f6;
+    const v=vol?vol/100000000:null;
+    document.getElementById('volumeCard').innerHTML=`
+      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1;box-shadow:0 0 6px #6366f166"></span>A股今日成交额</div>
+      <div class="flow-val" style="color:#4f46e5">${v?fmt(v,0)+'亿':'--'}</div>
+      <div class="flow-sub">${v?'沪深两市合计':'暂无数据'}</div>`;
+  }catch{
+    document.getElementById('volumeCard').innerHTML=`
+      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1"></span>A股今日成交额</div>
+      <div class="flow-val flat">--</div>
+      <div class="flow-sub">暂无数据</div>`;
+  }
+}
+
 function renderFlow(sh,sz,tot){
   const items=[{l:'沪股通净流入',dot:'#10b981',v:sh},{l:'深股通净流入',dot:'#3b82f6',v:sz},{l:'北向合计',dot:'#8b5cf6',v:tot}];
-  document.getElementById('flowGrid').innerHTML=items.map(f=>{
+  const html=items.map(f=>{
     const fv=f.v==null?'--':(f.v>=0?'+':'')+fmt(f.v/100,2)+'亿';
     const c=f.v==null?'flat':cls(f.v);
     const pct=Math.min(Math.abs(f.v||0)/Math.max(Math.abs(tot||1),1)*100,100);
@@ -453,13 +419,17 @@ function renderFlow(sh,sz,tot){
       <div class="flow-track"><div class="flow-fill" style="width:${pct}%;background:linear-gradient(90deg,${f.dot}88,${f.dot})"></div></div>
     </div>`;
   }).join('');
+  // 保留成交额卡片不覆盖
+  const flowGrid=document.getElementById('flowGrid');
+  const volCard=document.getElementById('volumeCard').outerHTML;
+  flowGrid.innerHTML=html;
+  flowGrid.insertAdjacentHTML('beforeend',volCard.replace('id="volumeCard"','id="volumeCard"'));
 }
 
-// ── Sectors ───────────────────────────────────────────────────────────
+// ── 板块（直接请求）──────────────────────────────────────────────────
 async function loadSectors(){
   try{
-    const r=await fetchWithProxy('https://push2.eastmoney.com/api/qt/clist/get?pn=1&pz=20&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f3&fs=m:90+t:2+f:!50&fields=f2,f3,f4,f12,f14');
-    const j=await r.json();
+    const j=await fetchEM('https://push2.eastmoney.com/api/qt/clist/get?pn=1&pz=20&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f3&fs=m:90+t:2+f:!50&fields=f2,f3,f4,f12,f14');
     const list=(j.data?.diff||[]).sort((a,b)=>b.f3-a.f3);
     if(!list.length){document.getElementById('sectorCard').innerHTML='<div class="loading">暂无数据</div>';return;}
     const mx=Math.max(...list.map(s=>Math.abs(s.f3)));
@@ -471,15 +441,17 @@ async function loadSectors(){
         <td><span class="pill-tag ${c}">${sgn(s.f3)}${fmt(s.f3,2)}%</span>
         <span class="bar-wrap"><span class="bar-fill" style="width:${Math.abs(s.f3)/mx*100}%;background:${s.f3>=0?'#34d399':'#f87171'}"></span></span></td></tr>`;
       }).join('')}</tbody></table>`;
-  }catch{document.getElementById('sectorCard').innerHTML='<div class="err-box">板块数据获取失败</div>';}
+  }catch(e){document.getElementById('sectorCard').innerHTML=`<div class="err-box">板块数据获取失败：${e.message}</div>`;}
 }
 
-// ── LHB ──────────────────────────────────────────────────────────────
+// ── 龙虎榜（走代理，datacenter域名需要）────────────────────────────
 async function loadLHB(){
   try{
-    const today=todayStr();
-    const r=await fetchWithProxy(`https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_BILLBOARD_LIST&columns=SECURITY_CODE,SECURITY_NAME,CHANGE_RATE,BILLBOARD_NET_AMT,EXPLAIN&pageSize=10&pageNumber=1&sortTypes=-1&sortColumns=BILLBOARD_NET_AMT&filter=(TRADE_DATE>'${today}')`);
-    const j=await r.json();const list=j.result?.data||[];
+    const today=new Date().toISOString().slice(0,10);
+    const url=`https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_BILLBOARD_LIST&columns=SECURITY_CODE,SECURITY_NAME,CHANGE_RATE,BILLBOARD_NET_AMT&pageSize=10&pageNumber=1&sortTypes=-1&sortColumns=BILLBOARD_NET_AMT&filter=(TRADE_DATE>'${today}')`;
+    const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
+    const j=await r.json();
+    const list=j.result?.data||[];
     if(!list.length){document.getElementById('lhbCard').innerHTML='<div class="loading">今日暂无数据</div>';return;}
     document.getElementById('lhbCard').innerHTML=`<table class="tbl">
       <thead><tr><th>股票</th><th>涨跌</th><th>净买入(万)</th></tr></thead>
@@ -488,14 +460,16 @@ async function loadLHB(){
         <td><span class="pill-tag ${cls(s.CHANGE_RATE)}">${sgn(s.CHANGE_RATE)}${fmt(s.CHANGE_RATE,2)}%</span></td>
         <td class="${cls(s.BILLBOARD_NET_AMT)}" style="font-weight:700">${sgn(s.BILLBOARD_NET_AMT)}${fmt(s.BILLBOARD_NET_AMT/10000,0)}</td>
       </tr>`).join('')}</tbody></table>`;
-  }catch{document.getElementById('lhbCard').innerHTML='<div class="err-box">龙虎榜获取失败</div>';}
+  }catch(e){document.getElementById('lhbCard').innerHTML=`<div class="err-box">龙虎榜获取失败：${e.message}</div>`;}
 }
 
-// ── Block Trade ───────────────────────────────────────────────────────
+// ── 大宗交易（走代理）───────────────────────────────────────────────
 async function loadBlockTrade(){
   try{
-    const r=await fetchWithProxy('https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_BLOCK_TRADE&columns=SECURITY_CODE,SECURITY_NAME,TRADE_PRICE,TURNOVER,PREMIUM_RATE&pageSize=8&pageNumber=1&sortTypes=-1&sortColumns=TURNOVER');
-    const j=await r.json();const list=j.result?.data||[];
+    const url='https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_BLOCK_TRADE&columns=SECURITY_CODE,SECURITY_NAME,TRADE_PRICE,TURNOVER,PREMIUM_RATE&pageSize=8&pageNumber=1&sortTypes=-1&sortColumns=TURNOVER';
+    const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
+    const j=await r.json();
+    const list=j.result?.data||[];
     if(!list.length){document.getElementById('blockCard').innerHTML='<div class="loading">今日暂无数据</div>';return;}
     document.getElementById('blockCard').innerHTML=`<table class="tbl">
       <thead><tr><th>股票</th><th>成交额(万)</th><th>折溢价</th></tr></thead>
@@ -504,14 +478,16 @@ async function loadBlockTrade(){
         <td style="font-weight:700">${fmt(s.TURNOVER/10000,0)}</td>
         <td><span class="pill-tag ${cls(s.PREMIUM_RATE)}">${sgn(s.PREMIUM_RATE)}${fmt(s.PREMIUM_RATE,2)}%</span></td>
       </tr>`).join('')}</tbody></table>`;
-  }catch{document.getElementById('blockCard').innerHTML='<div class="err-box">大宗交易获取失败</div>';}
+  }catch(e){document.getElementById('blockCard').innerHTML=`<div class="err-box">大宗交易获取失败：${e.message}</div>`;}
 }
 
-// ── Margin ────────────────────────────────────────────────────────────
+// ── 融资融券（走代理）───────────────────────────────────────────────
 async function loadMargin(){
   try{
-    const r=await fetchWithProxy('https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_MARGIN_DETAILS&columns=DATE,RZYE,RQYE,RZRQYE&pageSize=1&pageNumber=1&sortTypes=-1&sortColumns=DATE');
-    const j=await r.json();const d=j.result?.data?.[0];
+    const url='https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_MARGIN_DETAILS&columns=DATE,RZYE,RQYE,RZRQYE&pageSize=1&pageNumber=1&sortTypes=-1&sortColumns=DATE';
+    const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
+    const j=await r.json();
+    const d=j.result?.data?.[0];
     renderMargin(d?{rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE}:null);
   }catch{renderMargin(null);}
 }
@@ -524,109 +500,46 @@ function renderMargin(d){
   </div>`).join('');
 }
 
-// ── AI ────────────────────────────────────────────────────────────────
-let allNews=[],curTab='all';
-async function loadAI(){
-  const today=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
-  const prompt=`今天是${today}。请作为专业财经编辑，严格按以下JSON格式输出，不要有任何其他文字：
-{"sentiment":{"score":65,"label":"偏多","summary":"50字以内今日市场情绪总结"},"news":[
-{"src":"cls","title":"财联社标题","summary":"摘要35字内","time":"HH:MM"},
-{"src":"cls","title":"...","summary":"...","time":"..."},
-{"src":"cls","title":"...","summary":"...","time":"..."},
-{"src":"xq","title":"雪球热门标题","summary":"...","time":"..."},
-{"src":"xq","title":"...","summary":"...","time":"..."},
-{"src":"xq","title":"...","summary":"...","time":"..."},
-{"src":"gl","title":"国际机构观点（高盛/摩根/桥水等）","summary":"...","time":"..."},
-{"src":"gl","title":"...","summary":"...","time":"..."},
-{"src":"gl","title":"...","summary":"...","time":"..."}
-]}
-score为0-100，0=极度悲观，100=极度乐观。内容请贴近当前市场实际。`;
-  try{
-    const resp=await fetch(AI_API,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
-    const data=await resp.json();
-    const parsed=JSON.parse((data.content?.[0]?.text||'').replace(/```json|```/g,'').trim());
-    const s=parsed.sentiment||{};
-    const score=Math.min(100,Math.max(0,s.score||50));
-    document.getElementById('sentimentBox').innerHTML=`<div class="sentiment-wrap">
-      <div class="sentiment-top">
-        <div><div class="sentiment-lbl">${s.label||'中性'}</div><div class="sentiment-sub">今日市场情绪分析</div></div>
-        <div class="sentiment-num">情绪指数 ${score} / 100</div>
-      </div>
-      <div class="meter-wrap"><div class="meter-thumb" style="left:${score}%"></div></div>
-      <div class="meter-labels"><span>极度悲观</span><span>中性</span><span>极度乐观</span></div>
-      <div class="sentiment-text">${s.summary||''}</div>
-    </div>`;
-    allNews=parsed.news||[];
-    renderNews(curTab);
-  }catch(e){
-    document.getElementById('sentimentBox').innerHTML=`<div class="err-box">AI 分析失败：${e.message}</div>`;
-    document.getElementById('newsArea').innerHTML=`<div class="err-box">新闻加载失败，请刷新重试</div>`;
-  }
+// ── 基金价格（JSONP直接请求）────────────────────────────────────────
+async function fetchFundPrice(code){
+  return new Promise((resolve)=>{
+    const cb='cb_'+Date.now();
+    const s=document.createElement('script');
+    s.src=`https://fundgz.1234567.com.cn/z/sz/${code}.js?callback=${cb}&rt=${Date.now()}`;
+    window[cb]=d=>{
+      document.head.removeChild(s);
+      delete window[cb];
+      const price=parseFloat(d.gsz)||0;
+      const prev=parseFloat(d.dwjz)||price;
+      const pct=parseFloat(d.gszzl)||0;
+      resolve({price,prev,chg:price-prev,pct});
+    };
+    s.onerror=()=>{document.head.removeChild(s);delete window[cb];resolve(null);};
+    document.head.appendChild(s);
+  });
 }
 
-const SRC={cls:{l:'财联社',c:'t-cls'},xq:{l:'雪球',c:'t-xq'},gl:{l:'国际视野',c:'t-gl'}};
-function renderNews(tab){
-  const items=tab==='all'?allNews:allNews.filter(n=>n.src===tab);
-  if(!items.length){document.getElementById('newsArea').innerHTML='<div class="loading">暂无数据</div>';return;}
-  document.getElementById('newsArea').innerHTML=`<div class="news-grid">${items.map(n=>{
-    const m=SRC[n.src]||{l:n.src,c:'t-cls'};
-    return`<div class="news-card"><span class="ntag ${m.c}">${m.l}</span>
-      <div class="news-ttl">${n.title}</div>
-      <div class="news-meta">${n.summary} · ${n.time||'今日'}</div>
-    </div>`;
-  }).join('')}</div>`;
-}
-function switchTab(tab,el){
-  curTab=tab;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));el.classList.add('on');
-  if(allNews.length)renderNews(tab);
-}
-
-// ── Calendar ──────────────────────────────────────────────────────────
-function loadCalendar(){
-  const ts=todayStr();
-  const events=[
-    {date:'2025-03-19',title:'美联储 FOMC 利率决议',sub:'联邦基金利率决定',imp:'high'},
-    {date:'2025-03-28',title:'美国 PCE 物价指数',sub:'2月核心PCE数据',imp:'high'},
-    {date:'2025-04-02',title:'美国非农就业数据',sub:'3月非农就业人数',imp:'high'},
-    {date:'2025-04-10',title:'美国 CPI 通胀数据',sub:'3月消费者物价指数',imp:'high'},
-    {date:'2025-04-16',title:'中国 GDP 季报',sub:'2025年Q1 GDP增速',imp:'high'},
-    {date:'2025-04-30',title:'美联储 FOMC 利率决议',sub:'4月利率决定',imp:'high'},
-    {date:'2025-05-02',title:'美国非农就业数据',sub:'4月非农就业人数',imp:'high'},
-    {date:'2025-05-13',title:'美国 CPI 通胀数据',sub:'4月消费者物价指数',imp:'high'},
-    {date:'2025-06-11',title:'美联储 FOMC 利率决议',sub:'6月利率决定',imp:'high'},
-    {date:'2025-07-09',title:'美联储 FOMC 利率决议',sub:'7月利率决定',imp:'high'},
-  ];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const past=events.filter(e=>e.date<ts).slice(-1);
-  const upcoming=events.filter(e=>e.date>=ts).slice(0,6);
-  document.getElementById('calList').innerHTML=[...past,...upcoming].map(e=>{
-    const isT=e.date===ts,isP=e.date<ts;
-    const d=new Date(e.date);
-    return`<div class="cal-item ${isT?'today':''} ${isP?'past':''}">
-      <div class="cal-date-box ${isT?'t':''}">
-        <div class="cal-mo">${months[d.getMonth()]}</div>
-        <div class="cal-dy">${d.getDate()}</div>
-      </div>
-      <span class="cal-dot" style="background:${e.imp==='high'?'#8b5cf6':'#3b82f6'}"></span>
-      <div class="cal-info">
-        <div class="cal-ttl">${e.title}${isT?' <span style="color:#4f46e5;font-size:10px;font-weight:800"> · 今天</span>':''}</div>
-        <div class="cal-sub">${e.sub}</div>
-      </div>
-      <span class="cal-badge ${e.imp==='high'?'b-high':'b-med'}">${e.imp==='high'?'重要':'关注'}</span>
-    </div>`;
-  }).join('');
-}
-
-// ── Watchlist ─────────────────────────────────────────────────────────
+// ── 自选股────────────────────────────────────────────────────────────
 let wlData=[],pendingDel=null,pwCb=null;
+let wlOpen=true;
+function toggleWl(){
+  wlOpen=!wlOpen;
+  document.getElementById('wlBody').classList.toggle('collapsed',!wlOpen);
+  document.getElementById('wlChevron').classList.toggle('open',wlOpen);
+}
 async function loadWatchlist(){
   try{
     wlData=await sbGet('watchlist');
     if(!Array.isArray(wlData)||!wlData.length){
       document.getElementById('wlCard').innerHTML='<div class="loading" style="padding:24px">自选列表为空，点击"添加"开始添加</div>';return;
     }
-    const prices=await Promise.allSettled(wlData.map(w=>fetchWlPrice(w.code,w.type)));
+    const prices=await Promise.allSettled(wlData.map(w=>{
+      if(w.type==='fund') return fetchFundPrice(w.code);
+      let sym=w.code;
+      if(/^\d{6}$/.test(w.code))sym=w.code+(w.code.startsWith('6')?'.SS':'.SZ');
+      else if(/^\d{5}$/.test(w.code))sym=w.code+'.HK';
+      return fetchY(sym);
+    }));
     document.getElementById('wlCard').innerHTML=`<table class="tbl">
       <thead><tr><th>代码</th><th>名称</th><th>类型</th><th>最新价</th><th>涨跌幅</th><th></th></tr></thead>
       <tbody>${wlData.map((w,i)=>{
@@ -636,37 +549,14 @@ async function loadWatchlist(){
           <td style="color:#6b7280;font-size:11px;font-weight:600">${w.code}</td>
           <td style="font-weight:700">${w.name}</td>
           <td><span class="wl-tag ${w.type==='fund'?'type-fund':'type-stock'}">${w.type==='fund'?'基金':'股票'}</span></td>
-          <td class="${c}" style="font-weight:700">${p?fmt(p.price):'--'}</td>
-          <td><span class="pill-tag ${c}">${p?sgn(p.pct)+fmt(p.pct,2)+'%':'--'}</span></td>
+          <td class="${c}" style="font-weight:700">${p&&p.price?fmt(p.price):'--'}</td>
+          <td><span class="pill-tag ${c}">${p&&p.pct!=null?sgn(p.pct)+fmt(p.pct,2)+'%':'--'}</span></td>
           <td><button class="btn btn-ghost btn-sm" onclick="openDelModal(${w.id},'${w.name}')">移除</button></td>
         </tr>`;
       }).join('')}</tbody></table>`;
   }catch(e){document.getElementById('wlCard').innerHTML=`<div class="err-box">加载失败：${e.message}</div>`;}
 }
-async function fetchWlPrice(code,type){
-  try{
-    if(type==='fund'){
-      // 基金用天天基金接口
-      const r=await fetchWithProxy(`https://fundgz.1234567.com.cn/z/sz/${code}.js?rt=${Date.now()}`);
-      const txt=await r.text();
-      const m=txt.match(/jsonpgz\((.*)\)/);
-      if(m){
-        const d=JSON.parse(m[1]);
-        const price=parseFloat(d.gsz)||0;
-        const prev=parseFloat(d.dwjz)||price;
-        const pct=parseFloat(d.gszzl)||0;
-        return{price,prev,chg:price-prev,pct};
-      }
-    }
-    // 股票走Yahoo Finance
-    let sym=code;
-    if(/^\d{6}$/.test(code))sym=code+(code.startsWith('6')?'.SS':'.SZ');
-    else if(/^\d{5}$/.test(code))sym=code+'.HK';
-    return await fetchY(sym);
-  }catch{
-    return null;
-  }
-}
+
 function openWlModal(){
   document.getElementById('modalErr').style.display='none';
   document.getElementById('pwInput').value='';
@@ -701,20 +591,48 @@ async function confirmPw(){
   closePwModal();loadWatchlist();
 }
 
-// ── Market hours ──────────────────────────────────────────────────────
-function isMarketOpen(){
-  const now=new Date();
-  const day=now.getDay();
-  if(day===0||day===6)return false;
-  const h=now.getHours(),m=now.getMinutes();
-  const mins=h*60+m;
-  // A股 9:25-15:05
-  const aStock=(mins>=9*60+25&&mins<=15*60+5);
-  // 美股 21:30-次日04:00（跨午夜处理）
-  const usStock=(mins>=21*60+30||mins<=4*60);
-  return aStock||usStock;
+// ── 财经日历────────────────────────────────────────────────────────
+function loadCalendar(){
+  const ts=new Date().toISOString().slice(0,10);
+  const events=[
+    {date:'2025-03-28',title:'美国 PCE 物价指数',sub:'2月核心PCE数据',imp:'high'},
+    {date:'2025-04-02',title:'美国非农就业数据',sub:'3月非农就业人数',imp:'high'},
+    {date:'2025-04-10',title:'美国 CPI 通胀数据',sub:'3月消费者物价指数',imp:'high'},
+    {date:'2025-04-16',title:'中国 GDP 季报',sub:'2025年Q1 GDP增速',imp:'high'},
+    {date:'2025-04-30',title:'美联储 FOMC 利率决议',sub:'4月利率决定',imp:'high'},
+    {date:'2025-05-02',title:'美国非农就业数据',sub:'4月非农就业人数',imp:'high'},
+    {date:'2025-05-13',title:'美国 CPI 通胀数据',sub:'4月消费者物价指数',imp:'high'},
+    {date:'2025-06-11',title:'美联储 FOMC 利率决议',sub:'6月利率决定',imp:'high'},
+    {date:'2025-07-09',title:'美联储 FOMC 利率决议',sub:'7月利率决定',imp:'high'},
+  ];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const past=events.filter(e=>e.date<ts).slice(-1);
+  const upcoming=events.filter(e=>e.date>=ts).slice(0,6);
+  document.getElementById('calList').innerHTML=[...past,...upcoming].map(e=>{
+    const isT=e.date===ts,isP=e.date<ts;
+    const d=new Date(e.date);
+    return`<div class="cal-item ${isT?'today':''} ${isP?'past':''}">
+      <div class="cal-date-box ${isT?'t':''}">
+        <div class="cal-mo">${months[d.getMonth()]}</div>
+        <div class="cal-dy">${d.getDate()}</div>
+      </div>
+      <span class="cal-dot" style="background:${e.imp==='high'?'#8b5cf6':'#3b82f6'}"></span>
+      <div class="cal-info">
+        <div class="cal-ttl">${e.title}${isT?' <span style="color:#4f46e5;font-size:10px;font-weight:800"> · 今天</span>':''}</div>
+        <div class="cal-sub">${e.sub}</div>
+      </div>
+      <span class="cal-badge ${e.imp==='high'?'b-high':'b-med'}">${e.imp==='high'?'重要':'关注'}</span>
+    </div>`;
+  }).join('');
 }
 
+// ── 交易时间判断────────────────────────────────────────────────────
+function isMarketOpen(){
+  const now=new Date(),day=now.getDay();
+  if(day===0||day===6)return false;
+  const mins=now.getHours()*60+now.getMinutes();
+  return(mins>=9*60+25&&mins<=15*60+5)||(mins>=21*60+30||mins<=4*60);
+}
 function updateCountdown(){
   const el=document.getElementById('countdownPill');if(!el)return;
   const now=new Date(),day=now.getDay();
@@ -730,31 +648,32 @@ function updateCountdown(){
   el.textContent=msg;
 }
 
-// ── Load all ──────────────────────────────────────────────────────────
-async function loadAll(manual=false){
+// ── 主刷新────────────────────────────────────────────────────────────
+async function loadAll(){
   const btn=document.getElementById('bigRefBtn');
   if(btn){btn.disabled=true;btn.textContent='刷新中...';}
   await Promise.all([
-    loadIndices(),loadCommodities(),loadFundFlow(),
-    loadSectors(),loadLHB(),loadBlockTrade(),loadMargin(),loadWatchlist()
+    loadIndices(),loadCommodities(),
+    loadFundFlow(),loadVolume(),
+    loadSectors(),loadLHB(),loadBlockTrade(),loadMargin(),
+    loadWatchlist()
   ]);
   loadCalendar();
   document.getElementById('updTime').textContent='更新于 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
   if(btn){btn.disabled=false;btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> 刷新全部数据';}
 }
 
-// 每次打开页面自动刷新一次
+document.getElementById('bigRefBtn').onclick=loadAll;
+
+// 每次打开页面立即刷新
 loadAll();
-loadCalendar();
 updateCountdown();
 
-// 每30秒检测：交易时间内自动刷新
+// 交易时间内每30秒自动刷新
 setInterval(()=>{
   updateCountdown();
   if(isMarketOpen()) loadAll();
 },30000);
-
-document.getElementById('bigRefBtn').onclick=()=>loadAll(true);
 </script>
 </body>
 </html>
