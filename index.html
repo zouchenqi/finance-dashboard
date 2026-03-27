@@ -318,7 +318,28 @@ async function fetchY(sym){
   return{price:m.regularMarketPrice,prev:m.chartPreviousClose,chg,pct:chg/m.chartPreviousClose*100};
 }
 
-// ── 东方财富（直接请求，支持CORS）────────────────────────────────────
+// ── Supabase 缓存层（所有人共享）─────────────────────────────────────
+async function saveCache(key,val){
+  try{
+    await fetch(`${SB_URL}/rest/v1/cache`,{
+      method:'POST',
+      headers:{...sbH,'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key,value:JSON.stringify(val),updated_at:new Date().toISOString()})
+    });
+  }catch{}
+}
+async function loadCache(key){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/cache?key=eq.${key}&select=value`,{headers:sbH});
+    const j=await r.json();
+    return j[0]?.value?JSON.parse(j[0].value):null;
+  }catch{return null;}
+}
+async function withCache(key,freshVal){
+  if(freshVal!=null){saveCache(key,freshVal);return{val:freshVal,cached:false};}
+  const c=await loadCache(key);
+  return c!=null?{val:c,cached:true}:{val:null,cached:false};
+}────
 async function fetchEM(url){
   const r=await fetch(url,{signal:AbortSignal.timeout(10000),headers:{'Referer':'https://www.eastmoney.com/','User-Agent':'Mozilla/5.0'}});
   return r.json();
@@ -382,22 +403,30 @@ async function loadFundFlow(){
   try{
     const j=await fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=');
     const d=j.data;
-    // 数据是数组格式：["时间,买入,卖出,净流入", ...]
-    // 取最后一条有效数据（非"-"的那条）
     const lastValid=arr=>{
       if(!Array.isArray(arr))return null;
       for(let i=arr.length-1;i>=0;i--){
-        const parts=arr[i].split(',');
-        const v=parseFloat(parts[3]);
+        const v=parseFloat(arr[i].split(',')[3]);
         if(!isNaN(v))return v;
       }
       return null;
     };
     const sh=lastValid(d.s2n);
     const sz=lastValid(d.s2s);
-    const tot=(sh!=null&&sz!=null)?sh+sz:sh||sz;
-    renderFlow(sh,sz,tot);
-  }catch(e){renderFlow(null,null,null);}
+    const tot=(sh!=null&&sz!=null)?sh+sz:(sh??sz);
+    // 缓存有效值
+    if(sh!=null)saveCache('flow_sh',sh);
+    if(sz!=null)saveCache('flow_sz',sz);
+    if(tot!=null)saveCache('flow_tot',tot);
+    renderFlow(
+      sh??await loadCache('flow_sh'),
+      sz??await loadCache('flow_sz'),
+      tot??await loadCache('flow_tot'),
+      sh==null
+    );
+  }catch{
+    renderFlow(await loadCache('flow_sh'),await loadCache('flow_sz'),await loadCache('flow_tot'),true);
+  }
 }
 
 // ── A股成交额（直接请求东方财富）───────────────────────────────────
@@ -405,27 +434,30 @@ async function loadVolume(){
   try{
     const j=await fetchEM('https://push2.eastmoney.com/api/qt/stock/get?secid=1.000001&fields=f6&ut=fa5fd1943c7b386f172d6893dbfba10b');
     const vol=j.data?.f6;
-    const v=vol?vol/100000000:null;
+    const v=vol&&vol>0?vol/100000000:null;
+    const {val,cached}=await withCache('volume',v);
     document.getElementById('volumeCard').innerHTML=`
-      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1;box-shadow:0 0 6px #6366f166"></span>A股今日成交额</div>
-      <div class="flow-val" style="color:#4f46e5">${v?fmt(v,0)+'亿':'--'}</div>
-      <div class="flow-sub">${v?'沪深两市合计':'暂无数据'}</div>`;
+      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1;box-shadow:0 0 6px #6366f166"></span>A股今日成交额${cached?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':''}</div>
+      <div class="flow-val" style="color:#4f46e5">${val?fmt(val,0)+'亿':'--'}</div>
+      <div class="flow-sub">${val?'沪深两市合计':'暂无数据'}</div>`;
   }catch{
+    const c=await loadCache('volume');
     document.getElementById('volumeCard').innerHTML=`
-      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1"></span>A股今日成交额</div>
-      <div class="flow-val flat">--</div>
-      <div class="flow-sub">暂无数据</div>`;
+      <div class="flow-lbl"><span class="flow-dot" style="background:#6366f1"></span>A股今日成交额${c?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':''}</div>
+      <div class="flow-val" style="color:#4f46e5">${c?fmt(c,0)+'亿':'--'}</div>
+      <div class="flow-sub">${c?'沪深两市合计':'暂无数据'}</div>`;
   }
 }
 
-function renderFlow(sh,sz,tot){
+function renderFlow(sh,sz,tot,fromCache=false){
+  const tag=fromCache?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':'';
   const items=[{l:'沪股通净流入',dot:'#10b981',v:sh},{l:'深股通净流入',dot:'#3b82f6',v:sz},{l:'北向合计',dot:'#8b5cf6',v:tot}];
   const html=items.map(f=>{
     const fv=f.v==null?'--':(f.v>=0?'+':'')+fmt(f.v/100,2)+'亿';
     const c=f.v==null?'flat':cls(f.v);
     const pct=Math.min(Math.abs(f.v||0)/Math.max(Math.abs(tot||1),1)*100,100);
     return`<div class="card">
-      <div class="flow-lbl"><span class="flow-dot" style="background:${f.dot};box-shadow:0 0 6px ${f.dot}66"></span>${f.l}</div>
+      <div class="flow-lbl"><span class="flow-dot" style="background:${f.dot};box-shadow:0 0 6px ${f.dot}66"></span>${f.l}${tag}</div>
       <div class="flow-val ${c}">${fv}</div>
       <div class="flow-sub">${f.v==null?'暂无数据':f.v>=0?'资金净流入 ↑':'资金净流出 ↓'}</div>
       <div class="flow-track"><div class="flow-fill" style="width:${pct}%;background:linear-gradient(90deg,${f.dot}88,${f.dot})"></div></div>
@@ -496,19 +528,25 @@ async function loadBlockTrade(){
 // ── 融资融券（走代理）───────────────────────────────────────────────
 async function loadMargin(){
   try{
-    const url='https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPT_MARGIN_DETAILS&columns=DATE,RZYE,RQYE,RZRQYE&pageSize=1&pageNumber=1&sortTypes=-1&sortColumns=DATE';
+    const url='https://datacenter-web.eastmoney.com/api/data/v1/get?reportName=RPTA_RZRQ_LSHJ&columns=ALL&source=WEB&sortColumns=DIM_DATE&sortTypes=-1&pageNumber=1&pageSize=1';
     const r=await fetch(PROXY(url),{signal:AbortSignal.timeout(10000)});
     const j=await r.json();
     const d=j.result?.data?.[0];
-    renderMargin(d?{rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE}:null);
-  }catch{renderMargin(null);}
+    if(d){
+      saveCache('margin',{rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE});
+      renderMargin({rz:d.RZYE,rq:d.RQYE,tot:d.RZRQYE},false);
+    } else {
+      renderMargin(await loadCache('margin'),true);
+    }
+  }catch{renderMargin(await loadCache('margin'),true);}
 }
-function renderMargin(d){
+function renderMargin(d,fromCache=false){
+  const tag=fromCache&&d?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">最新</span>':'';
   const items=[{l:'融资余额',dot:'#f59e0b',v:d?.rz},{l:'融券余额',dot:'#ef4444',v:d?.rq},{l:'融资融券合计',dot:'#8b5cf6',v:d?.tot}];
   document.getElementById('marginGrid').innerHTML=items.map(f=>`<div class="card">
-    <div class="flow-lbl"><span class="flow-dot" style="background:${f.dot};box-shadow:0 0 6px ${f.dot}66"></span>${f.l}</div>
+    <div class="flow-lbl"><span class="flow-dot" style="background:${f.dot};box-shadow:0 0 6px ${f.dot}66"></span>${f.l}${tag}</div>
     <div class="flow-val" style="color:#111827">${f.v==null?'--':fmt(f.v/100000000,0)+'亿'}</div>
-    <div class="flow-sub">${f.v==null?'暂无数据':'最新余额'}</div>
+    <div class="flow-sub">${f.v==null?'暂无数据':'余额数据'}</div>
   </div>`).join('');
 }
 
