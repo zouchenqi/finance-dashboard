@@ -803,7 +803,7 @@ function loadAll(){
   return Promise.all([
     loadIndices(),loadCommodities(),
     loadFundFlow(),
-    loadSectors(),loadBlockTrade(),loadMargin(),
+    loadSectors(),loadMargin(),
     loadWatchlist(),loadNews(curNewsTab)
   ]).then(function(){
     loadCalendar();
