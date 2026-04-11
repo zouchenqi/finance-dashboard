@@ -121,6 +121,16 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
 .vix-low{background:#d1fae5;color:#065f46}
 .vix-mid{background:#fef3c7;color:#92400e}
 .vix-high{background:#fee2e2;color:#991b1b}
+.news-tabs{display:flex;gap:8px;margin-bottom:14px}
+.ntab{background:#fff;border:1px solid #e8ecf4;color:#6b7280;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.ntab:hover{border-color:#a5b4fc;color:#4f46e5}
+.ntab.on{background:linear-gradient(135deg,#4f46e5,#2563eb);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(79,70,229,.3)}
+.news-list{display:flex;flex-direction:column;gap:8px}
+.news-item{background:#fff;border:1px solid #e8ecf4;border-radius:12px;padding:13px 16px;transition:all .2s;cursor:pointer;text-decoration:none;display:block;color:inherit}
+.news-item:hover{border-color:#c7d2fe;box-shadow:0 3px 14px rgba(99,102,241,.1);transform:translateY(-1px)}
+.news-title{font-size:13px;font-weight:600;color:#111827;line-height:1.55;margin-bottom:5px}
+.news-digest{font-size:12px;color:#6b7280;line-height:1.5;margin-bottom:4px}
+.news-time{font-size:11px;color:#9ca3af}
 </style>
 </head>
 <body>
@@ -180,7 +190,7 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
   <div class="sec-icon" style="background:linear-gradient(135deg,#fef9c3,#fef08a)">&#11088;</div>
   <span class="sec-title">自选股 / 基金</span>
   <div class="sec-line" style="flex:1;height:1px;background:linear-gradient(90deg,#e0e7ff,transparent);margin:0 10px"></div>
-  <span class="wl-chevron open" id="wlChevron">&#9660;</span>
+  <span style="background:linear-gradient(135deg,#4f46e5,#2563eb);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(79,70,229,.3);transition:all .25s" id="wlChevron">收起 ▲</span>
 </button>
 <div class="wl-body" id="wlBody">
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
@@ -213,25 +223,6 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
   </div>
   <div>
     <div class="sec">
-      <div class="sec-icon" style="background:linear-gradient(135deg,#fdf4ff,#f3e8ff)">&#129409;</div>
-      <span class="sec-title">龙虎榜</span>
-      <div class="sec-line"></div>
-    </div>
-    <div class="tbl-wrap" id="lhbCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  </div>
-</div>
-
-<div class="g2">
-  <div>
-    <div class="sec">
-      <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">&#127974;</div>
-      <span class="sec-title">大宗交易</span>
-      <div class="sec-line"></div>
-    </div>
-    <div class="tbl-wrap" id="blockCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  </div>
-  <div>
-    <div class="sec">
       <div class="sec-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">&#128202;</div>
       <span class="sec-title">融资融券余额</span>
       <div class="sec-line"></div>
@@ -244,10 +235,30 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
   </div>
 </div>
 
+<div class="g2">
+  <div>
+    <div class="sec">
+      <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">&#127974;</div>
+      <span class="sec-title">大宗交易</span>
+      <div class="sec-line"></div>
+    </div>
+    <div class="tbl-wrap" id="blockCard"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  </div>
+</div>
+
 <div class="sec">
   <div class="sec-icon" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">&#128197;</div>
   <span class="sec-title">重要财经日历</span>
   <div class="sec-line"></div>
+</div>
+<div class="sec">
+  <div class="sec-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">&#128240;</div>
+  <span class="sec-title">财经要闻</span>
+  <div class="sec-line"></div>
+</div>
+<div class="news-tabs" id="newsTabs">
+  <button class="ntab on" onclick="switchNews('em',this)">东方财富快讯</button>
+  <button class="ntab" onclick="switchNews('sina',this)">新浪财经</button>
 </div>
 <div class="cal-list" id="calList"></div>
 
@@ -290,7 +301,16 @@ function PROXY(url){return '/api/proxy?url='+encodeURIComponent(url);}
 document.getElementById('todayDate').textContent=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
 
 var sbH={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
-function sbGet(t){return fetch(SB_URL+'/rest/v1/'+t+'?select=*&order=id.asc',{headers:sbH}).then(function(r){return r.json();});}
+function sbGet(t){
+  return fetch(SB_URL+'/rest/v1/'+t+'?select=*&order=id.asc',{
+    headers:sbH,
+    mode:'cors',
+    signal:AbortSignal.timeout(10000)
+  }).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  });
+}
 function sbIns(t,r){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:Object.assign({},sbH,{'Prefer':'return=representation'}),body:JSON.stringify(r)});}
 function sbDel(t,id){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'DELETE',headers:sbH});}
 
@@ -579,7 +599,7 @@ var wlData=[],pendingDel=null,pwCb=null,wlOpen=true;
 function toggleWl(){
   wlOpen=!wlOpen;
   document.getElementById('wlBody').classList.toggle('collapsed',!wlOpen);
-  document.getElementById('wlChevron').classList.toggle('open',wlOpen);
+  document.getElementById('wlChevron').textContent=wlOpen?'收起 ▲':'展开 ▼';
 }
 
 function loadWatchlist(){
@@ -663,6 +683,56 @@ function confirmPw(){
   }
 }
 
+var curNewsTab='em';
+function switchNews(tab,el){
+  curNewsTab=tab;
+  document.querySelectorAll('.ntab').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  loadNews(tab);
+}
+
+function loadNews(tab){
+  document.getElementById('newsArea').innerHTML='<div class="loading"><div class="spinner"></div>加载中...</div>';
+  if(tab==='em'){
+    var url='https://newsapi.eastmoney.com/kuaixun/v1/getlist_102_ajaxResult_50_1_.html';
+    fetch('/api/proxy?url='+encodeURIComponent(url),{signal:AbortSignal.timeout(10000)})
+      .then(function(r){return r.text();})
+      .then(function(txt){
+        var m=txt.match(/ajaxResult=(.+)/);
+        if(!m)throw new Error('解析失败');
+        var j=JSON.parse(m[1]);
+        var items=j.LivesList.slice(0,15);
+        document.getElementById('newsArea').innerHTML='<div class="news-list">'+items.map(function(item){
+          return '<div class="news-item">'+
+            '<div class="news-title">'+item.title+'</div>'+
+            (item.digest&&item.digest!==item.title?'<div class="news-digest">'+item.digest+'</div>':'')+
+            '<div class="news-time">'+item.showtime+'</div>'+
+          '</div>';
+        }).join('')+'</div>';
+      }).catch(function(e){
+        document.getElementById('newsArea').innerHTML='<div class="err-box">东方财富快讯加载失败：'+e.message+'</div>';
+      });
+  } else {
+    var url2='https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2516&k=&num=20&page=1';
+    fetch('/api/proxy?url='+encodeURIComponent(url2),{signal:AbortSignal.timeout(10000)})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        var items=j.result.data.slice(0,15);
+        document.getElementById('newsArea').innerHTML='<div class="news-list">'+items.map(function(item){
+          var t=new Date(parseInt(item.ctime)*1000);
+          var timeStr=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0');
+          return '<a class="news-item" href="'+item.url+'" target="_blank" rel="noopener">'+
+            '<div class="news-title">'+item.title+'</div>'+
+            (item.intro?'<div class="news-digest">'+item.intro.slice(0,80)+'...</div>':'')+
+            '<div class="news-time">'+timeStr+'</div>'+
+          '</a>';
+        }).join('')+'</div>';
+      }).catch(function(e){
+        document.getElementById('newsArea').innerHTML='<div class="err-box">新浪财经加载失败：'+e.message+'</div>';
+      });
+  }
+}
+
 function loadCalendar(){
   var ts=new Date().toISOString().slice(0,10);
   var events=[
@@ -726,8 +796,8 @@ function loadAll(){
   return Promise.all([
     loadIndices(),loadCommodities(),
     loadFundFlow(),
-    loadSectors(),loadLHB(),loadBlockTrade(),loadMargin(),
-    loadWatchlist()
+    loadSectors(),loadBlockTrade(),loadMargin(),
+    loadWatchlist(),loadNews(curNewsTab)
   ]).then(function(){
     loadCalendar();
     document.getElementById('updTime').textContent='更新于 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
