@@ -307,8 +307,24 @@ function fmt(n,d){if(d===undefined)d=2;if(n==null)return '--';return n.toLocaleS
 function sgn(n){return n>0?'+':'';}
 function cls(n){return n>0?'up':n<0?'down':'flat';}
 
-function saveCache(key,val){fetch(SB_URL+'/rest/v1/cache',{method:'POST',headers:Object.assign({},sbH,{'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({key:key,value:JSON.stringify(val),updated_at:new Date().toISOString()})}).catch(function(){});}
-function loadCache(key){return fetch(SB_URL+'/rest/v1/cache?key=eq.'+encodeURIComponent(key)+'&select=value',{headers:sbH}).then(function(r){return r.json();}).then(function(j){if(j&&j[0]&&j[0].value){try{return JSON.parse(j[0].value);}catch(e){return null;}}return null;}).catch(function(){return null;});}
+function saveCache(key,val){
+  // 本地缓存优先（localStorage）
+  try{localStorage.setItem('fc_'+key,JSON.stringify({v:val,t:Date.now()}));}catch(e){}
+  // 同步到 Supabase（upsert）
+  fetch(SB_URL+'/rest/v1/cache',{method:'POST',headers:Object.assign({},sbH,{'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({key:key,value:JSON.stringify(val),updated_at:new Date().toISOString()})}).catch(function(){});
+}
+function loadCache(key){
+  // 先读本地缓存（24小时内有效）
+  try{
+    var raw=localStorage.getItem('fc_'+key);
+    if(raw){var obj=JSON.parse(raw);if(obj&&Date.now()-obj.t<86400000)return Promise.resolve(obj.v);}
+  }catch(e){}
+  // 兜底读 Supabase
+  return fetch(SB_URL+'/rest/v1/cache?key=eq.'+encodeURIComponent(key)+'&select=value',{headers:sbH})
+    .then(function(r){return r.json();})
+    .then(function(j){if(j&&j[0]&&j[0].value){try{return JSON.parse(j[0].value);}catch(e){return null;}}return null;})
+    .catch(function(){return null;});
+}
 
 function fetchY(sym){
   return fetch(PROXY('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d'),{signal:AbortSignal.timeout(10000)})
@@ -345,23 +361,51 @@ function loadFundFlow(){
   return fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=')
     .then(function(j){
       var d=j.data;
-      function lastValid(arr){if(!Array.isArray(arr))return null;for(var i=arr.length-1;i>=0;i--){var v=parseFloat(arr[i].split(',')[3]);if(!isNaN(v))return v;}return null;}
-      var sh=lastValid(d.s2n),sz=lastValid(d.s2s);
-      var tot=(sh!=null&&sz!=null)?sh+sz:(sh!=null?sh:(sz!=null?sz:null));
-      if(sh!=null)saveCache('flow_sh',sh);if(sz!=null)saveCache('flow_sz',sz);if(tot!=null)saveCache('flow_tot',tot);
-      return Promise.all([sh!=null?Promise.resolve(sh):loadCache('flow_sh'),sz!=null?Promise.resolve(sz):loadCache('flow_sz'),tot!=null?Promise.resolve(tot):loadCache('flow_tot')])
-        .then(function(v){renderFlow(v[0],v[1],v[2],sh==null);});
-    }).catch(function(){return Promise.all([loadCache('flow_sh'),loadCache('flow_sz'),loadCache('flow_tot')]).then(function(v){renderFlow(v[0],v[1],v[2],true);});});
+      // fields2=f51(时间),f52(沪股通累计),f53(深股通累计),f54(北向合计)
+      // 取最后一个非"-"且数值不为0的行；列索引：0=时间,1=沪股通,2=深股通,3=北向合计
+      function lastValid(arr,col){
+        if(!Array.isArray(arr))return null;
+        for(var i=arr.length-1;i>=0;i--){
+          var parts=arr[i].split(',');
+          if(parts.length<=col)continue;
+          var raw=parts[col];
+          if(raw==='-'||raw===''||raw==null)continue;
+          var v=parseFloat(raw);
+          if(!isNaN(v)&&v!==0)return v;
+        }
+        return null;
+      }
+      var s2n=d.s2n||[];
+      var sh=lastValid(s2n,1);   // 沪股通：列1
+      var sz=lastValid(s2n,2);   // 深股通：列2
+      var tot=lastValid(s2n,3);  // 北向合计：列3
+      // 如果tot为null但sh和sz都有值，手动相加
+      if(tot==null&&sh!=null&&sz!=null)tot=sh+sz;
+      var gotLive=(sh!=null||sz!=null||tot!=null);
+      if(sh!=null)saveCache('flow_sh',sh);
+      if(sz!=null)saveCache('flow_sz',sz);
+      if(tot!=null)saveCache('flow_tot',tot);
+      return Promise.all([
+        sh!=null?Promise.resolve(sh):loadCache('flow_sh'),
+        sz!=null?Promise.resolve(sz):loadCache('flow_sz'),
+        tot!=null?Promise.resolve(tot):loadCache('flow_tot')
+      ]).then(function(v){renderFlow(v[0],v[1],v[2],!gotLive);});
+    }).catch(function(){
+      return Promise.all([loadCache('flow_sh'),loadCache('flow_sz'),loadCache('flow_tot')])
+        .then(function(v){renderFlow(v[0],v[1],v[2],true);});
+    });
 }
 
 function renderFlow(sh,sz,tot,fromCache){
   var tag=fromCache?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':'';
   var items=[{l:'沪股通净流入',dot:'#10b981',v:sh},{l:'深股通净流入',dot:'#3b82f6',v:sz},{l:'北向合计',dot:'#8b5cf6',v:tot}];
   var html=items.map(function(f){
-    var fv=f.v==null?'--':((f.v>=0?'+':'')+fmt(f.v/100,2)+'亿');
-    var c=f.v==null?'flat':cls(f.v);
+    var isNull=(f.v==null);
+    var fv=isNull?'--':((f.v>=0?'+':'')+fmt(f.v/100,2)+'亿');
+    var c=isNull?'flat':cls(f.v);
     var pct=Math.min(Math.abs(f.v||0)/Math.max(Math.abs(tot||1),1)*100,100);
-    return '<div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:'+f.dot+';box-shadow:0 0 6px '+f.dot+'66"></span>'+f.l+tag+'</div><div class="flow-val '+c+'">'+fv+'</div><div class="flow-sub">'+(f.v==null?'暂无数据':f.v>=0?'资金净流入 ↑':'资金净流出 ↓')+'</div><div class="flow-track"><div class="flow-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+f.dot+'88,'+f.dot+')"></div></div></div>';
+    var sub=isNull?(fromCache?'暂无缓存数据':'数据暂未披露'):(f.v>=0?'资金净流入 ↑':'资金净流出 ↓');
+    return '<div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:'+f.dot+';box-shadow:0 0 6px '+f.dot+'66"></span>'+f.l+tag+'</div><div class="flow-val '+c+'">'+fv+'</div><div class="flow-sub">'+sub+'</div><div class="flow-track"><div class="flow-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+f.dot+'88,'+f.dot+')"></div></div></div>';
   }).join('');
   document.getElementById('flowGrid').innerHTML=html;
   var vc=document.createElement('div');vc.className='card';vc.id='volumeCard';
