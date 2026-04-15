@@ -17,10 +17,10 @@
   --text:#e2e8f0;
   --text2:#8899b0;
   --text3:#4a5568;
-  --up:#00d97e;
-  --up-dim:#00d97e22;
-  --down:#ff4d6a;
-  --down-dim:#ff4d6a22;
+  --up:#ff4d6a;
+  --up-dim:#ff4d6a22;
+  --down:#00d97e;
+  --down-dim:#00d97e22;
   --flat:#8899b0;
   --accent:#00c2ff;
   --accent-dim:#00c2ff15;
@@ -552,9 +552,18 @@ function loadCache(key){
 }
 
 function fetchY(sym){
-  return fetch(PROXY('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d'),{signal:AbortSignal.timeout(10000)})
+  return fetch(PROXY('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=5d'),{signal:AbortSignal.timeout(10000)})
     .then(function(r){return r.json();})
-    .then(function(j){var m=j.chart.result[0].meta;var chg=m.regularMarketPrice-m.chartPreviousClose;return{price:m.regularMarketPrice,prev:m.chartPreviousClose,chg:chg,pct:chg/m.chartPreviousClose*100};});
+    .then(function(j){
+      var m=j.chart.result[0].meta;
+      var closes=j.chart.result[0].indicators.quote[0].close;
+      // 过滤掉 null，取最后两个有效收盘价
+      var valid=closes.filter(function(v){return v!=null;});
+      var price=m.regularMarketPrice;
+      var prev=valid.length>=2?valid[valid.length-2]:m.chartPreviousClose;
+      var chg=price-prev;
+      return{price:price,prev:prev,chg:chg,pct:chg/prev*100};
+    });
 }
 function fetchEM(url){return fetch(url,{signal:AbortSignal.timeout(10000),headers:{'Referer':'https://www.eastmoney.com/','User-Agent':'Mozilla/5.0'}}).then(function(r){return r.json();});}
 
