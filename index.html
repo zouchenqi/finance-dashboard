@@ -170,11 +170,10 @@ body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:#
   <span class="sec-title">北向资金 &amp; 市场成交</span>
   <div class="sec-line"></div>
 </div>
-<div class="g4" id="flowGrid">
-  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>沪股通净流入</div><div class="sk sk-h"></div></div>
-  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>深股通净流入</div><div class="sk sk-h"></div></div>
-  <div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>北向合计</div><div class="sk sk-h"></div></div>
+<div class="g3" id="flowGrid">
+  <div class="card" id="northCard"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>北向资金合计</div><div class="sk sk-h"></div></div>
   <div class="card" id="volumeCard"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>A股今日成交额</div><div class="sk sk-h"></div></div>
+  <div class="card" id="breadthCard"><div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>涨跌家数</div><div class="sk sk-h"></div></div>
 </div>
 
 <!-- 刷新按钮 -->
@@ -360,9 +359,8 @@ function loadCommodities(){
 function loadFundFlow(){
   return fetchEM('https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54&ut=b2884a393a59ad64002292a3e90d46a5&cb=')
     .then(function(j){
-      var d=j.data;
-      // fields2=f51(时间),f52(沪股通累计),f53(深股通累计),f54(北向合计)
-      // 取最后一个非"-"且数值不为0的行；列索引：0=时间,1=沪股通,2=深股通,3=北向合计
+      var d=j&&j.data;
+      if(!d)throw new Error('no data');
       function lastValid(arr,col){
         if(!Array.isArray(arr))return null;
         for(var i=arr.length-1;i>=0;i--){
@@ -376,55 +374,75 @@ function loadFundFlow(){
         return null;
       }
       var s2n=d.s2n||[];
-      var sh=lastValid(s2n,1);   // 沪股通：列1
-      var sz=lastValid(s2n,2);   // 深股通：列2
-      var tot=lastValid(s2n,3);  // 北向合计：列3
-      // 如果tot为null但sh和sz都有值，手动相加
+      var sh=lastValid(s2n,1);
+      var sz=lastValid(s2n,2);
+      var tot=lastValid(s2n,3);
       if(tot==null&&sh!=null&&sz!=null)tot=sh+sz;
-      var gotLive=(sh!=null||sz!=null||tot!=null);
-      if(sh!=null)saveCache('flow_sh',sh);
-      if(sz!=null)saveCache('flow_sz',sz);
+      var gotLive=(tot!=null);
       if(tot!=null)saveCache('flow_tot',tot);
-      return Promise.all([
-        sh!=null?Promise.resolve(sh):loadCache('flow_sh'),
-        sz!=null?Promise.resolve(sz):loadCache('flow_sz'),
-        tot!=null?Promise.resolve(tot):loadCache('flow_tot')
-      ]).then(function(v){renderFlow(v[0],v[1],v[2],!gotLive);});
+      return (tot!=null?Promise.resolve(tot):loadCache('flow_tot'))
+        .then(function(v){renderNorth(v,!gotLive);});
     }).catch(function(){
-      return Promise.all([loadCache('flow_sh'),loadCache('flow_sz'),loadCache('flow_tot')])
-        .then(function(v){renderFlow(v[0],v[1],v[2],true);});
+      return loadCache('flow_tot').then(function(v){renderNorth(v,true);});
     });
 }
 
-function renderFlow(sh,sz,tot,fromCache){
-  var tag=fromCache?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':'';
-  var items=[{l:'沪股通净流入',dot:'#10b981',v:sh},{l:'深股通净流入',dot:'#3b82f6',v:sz},{l:'北向合计',dot:'#8b5cf6',v:tot}];
-  var html=items.map(function(f){
-    var isNull=(f.v==null);
-    var fv=isNull?'--':((f.v>=0?'+':'')+fmt(f.v/100,2)+'亿');
-    var c=isNull?'flat':cls(f.v);
-    var pct=Math.min(Math.abs(f.v||0)/Math.max(Math.abs(tot||1),1)*100,100);
-    var sub=isNull?(fromCache?'暂无缓存数据':'数据暂未披露'):(f.v>=0?'资金净流入 ↑':'资金净流出 ↓');
-    return '<div class="card"><div class="flow-lbl"><span class="flow-dot" style="background:'+f.dot+';box-shadow:0 0 6px '+f.dot+'66"></span>'+f.l+tag+'</div><div class="flow-val '+c+'">'+fv+'</div><div class="flow-sub">'+sub+'</div><div class="flow-track"><div class="flow-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+f.dot+'88,'+f.dot+')"></div></div></div>';
-  }).join('');
-  document.getElementById('flowGrid').innerHTML=html;
-  var vc=document.createElement('div');vc.className='card';vc.id='volumeCard';
-  vc.innerHTML='<div class="flow-lbl"><span class="flow-dot" style="background:#d1d5db"></span>A股今日成交额</div><div class="sk sk-h"></div>';
-  document.getElementById('flowGrid').appendChild(vc);
-  loadVolume();
+function renderNorth(tot,fromCache){
+  var nc=document.getElementById('northCard');if(!nc)return;
+  var tag=fromCache?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">'+(tot?'收盘':'休市')+'</span>':'';
+  // kamt.rtmin 单位是万元，除以10000得到亿
+  var fv=(tot==null)?'--':((tot>=0?'+':'')+fmt(tot/10000,2)+'亿');
+  var c=(tot==null)?'flat':cls(tot);
+  var sub=(tot==null)?(fromCache?'港股休市暂无数据':'数据暂未披露'):(tot>=0?'资金净流入 ↑':'资金净流出 ↓');
+  // 进度条基准：500亿（即5000000万元）
+  var pct=Math.min(Math.abs(tot||0)/5000000*100,100);
+  nc.innerHTML='<div class="flow-lbl"><span class="flow-dot" style="background:#8b5cf6;box-shadow:0 0 6px #8b5cf666"></span>北向资金合计'+tag+'</div><div class="flow-val '+c+'">'+fv+'</div><div class="flow-sub">'+sub+'</div><div class="flow-track"><div class="flow-fill" style="width:'+pct+'%;background:linear-gradient(90deg,#8b5cf688,#8b5cf6)"></div></div>';
 }
 
 function loadVolume(){
-  return fetchEM('https://push2.eastmoney.com/api/qt/stock/get?secid=1.000001&fields=f6&ut=fa5fd1943c7b386f172d6893dbfba10b')
-    .then(function(j){var vol=(j.data&&j.data.f6)?j.data.f6:null;var v=(vol&&vol>0)?vol/100000000:null;
-      if(v!=null){saveCache('volume',v);setVolumeCard(v,false);}
-      else{return loadCache('volume').then(function(c){setVolumeCard(c,true);});}
-    }).catch(function(){return loadCache('volume').then(function(c){setVolumeCard(c,true);});});
+  return fetchEM('https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f4,f5,f6,f104,f105,f106&secids=1.000001,0.399001&ut=fa5fd1943c7b386f172d6893dbfba10b')
+    .then(function(j){
+      var diff=j.data&&j.data.diff?j.data.diff:[];
+      var sh=diff[0]||{};var sz=diff[1]||{};
+      var totalVol=(sh.f6&&sz.f6)?(sh.f6+sz.f6)/100000000:null;
+      var up=(sh.f104||0)+(sz.f104||0);
+      var down=(sh.f105||0)+(sz.f105||0);
+      var flat=(sh.f106||0)+(sz.f106||0);
+      var gotVol=(totalVol!=null&&totalVol>0);
+      var gotBreadth=(up>0||down>0);
+      if(gotVol)saveCache('volume',totalVol);
+      if(gotBreadth)saveCache('breadth',{up:up,down:down,flat:flat});
+      var p1=gotVol?Promise.resolve(totalVol):loadCache('volume');
+      var p2=gotBreadth?Promise.resolve({up:up,down:down,flat:flat}):loadCache('breadth');
+      return Promise.all([p1,p2]).then(function(v){
+        setVolumeCard(v[0],!gotVol);
+        setBreadthCard(v[1],!gotBreadth);
+      });
+    }).catch(function(){
+      return Promise.all([loadCache('volume'),loadCache('breadth')]).then(function(v){
+        setVolumeCard(v[0],true);setBreadthCard(v[1],true);
+      });
+    });
 }
 function setVolumeCard(val,cached){
   var tag=(cached&&val)?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':'';
   var vc=document.getElementById('volumeCard');if(!vc)return;
   vc.innerHTML='<div class="flow-lbl"><span class="flow-dot" style="background:#6366f1;box-shadow:0 0 6px #6366f166"></span>A股今日成交额'+tag+'</div><div class="flow-val" style="color:#4f46e5">'+(val?fmt(val,0)+'亿':'--')+'</div><div class="flow-sub">'+(val?'沪深两市合计':'暂无数据')+'</div>';
+}
+function setBreadthCard(d,cached){
+  var bc=document.getElementById('breadthCard');if(!bc)return;
+  var tag=(cached&&d)?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">收盘</span>':'';
+  if(!d){bc.innerHTML='<div class="flow-lbl"><span class="flow-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b66"></span>涨跌家数</div><div class="flow-val flat">--</div><div class="flow-sub">暂无数据</div>';return;}
+  var total=d.up+d.down+d.flat;
+  var upPct=total>0?Math.round(d.up/total*100):0;
+  bc.innerHTML='<div class="flow-lbl"><span class="flow-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b66"></span>涨跌家数'+tag+'</div>'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px">'
+    +'<span class="flow-val up" style="font-size:20px">▲'+d.up+'</span>'
+    +'<span class="flow-val down" style="font-size:20px">▼'+d.down+'</span>'
+    +(d.flat?'<span style="font-size:13px;color:#9ca3af">平'+d.flat+'</span>':'')
+    +'</div>'
+    +'<div class="flow-sub">上涨占比 '+upPct+'%</div>'
+    +'<div class="flow-track"><div class="flow-fill" style="width:'+upPct+'%;background:linear-gradient(90deg,#34d39988,#34d399)"></div></div>';
 }
 
 function loadSectors(){
@@ -548,7 +566,7 @@ function updateCountdown(){var el=document.getElementById('countdownPill');if(!e
 
 function loadAll(){
   var btn=document.getElementById('bigRefBtn');if(btn){btn.disabled=true;btn.textContent='刷新中...';}
-  return Promise.all([loadIndices(),loadCommodities(),loadFundFlow(),loadSectors(),loadMargin(),loadWatchlist(),loadNews(curNewsTab)])
+  return Promise.all([loadIndices(),loadCommodities(),loadFundFlow(),loadVolume(),loadSectors(),loadMargin(),loadWatchlist(),loadNews(curNewsTab)])
     .then(function(){
       loadCalendar();
       document.getElementById('updTime').textContent='更新于 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
