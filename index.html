@@ -8,12 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0c10;
-  --bg2:#0f1218;
-  --bg3:#161b24;
-  --bg4:#1c2333;
-  --border:#1e2736;
-  --border2:#252f42;
+  --bg:#13161e;
+  --bg2:#171b25;
+  --bg3:#1d2230;
+  --bg4:#232838;
+  --border:#252d3d;
+  --border2:#2e3850;
   --text:#e2e8f0;
   --text2:#8899b0;
   --text3:#4a5568;
@@ -681,7 +681,7 @@ function setBreadthCard(d,cached){
     +'<div style="display:flex;align-items:baseline;gap:12px;margin:2px 0">'
     +'<span style="font-size:26px;font-weight:700;color:var(--up);font-family:\"DM Mono\",monospace">▲'+d.up+'</span>'
     +'<span style="font-size:26px;font-weight:700;color:var(--down);font-family:\"DM Mono\",monospace">▼'+d.down+'</span>'
-    +(d.flat?'<span style="font-size:12px;color:var(--text3);font-family:monospace">'+d.flat+'</span>':'')
+    +(d.flat?'<span style="font-size:18px;font-weight:600;color:var(--text3);font-family:monospace"> — '+d.flat+'</span>':'')
     +'</div>'
     +'<div class="flow-sub">上涨占比 '+upPct+'%</div>'
     +'<div class="flow-track"><div class="flow-fill" style="width:'+upPct+'%;background:var(--up)"></div></div>';
