@@ -564,8 +564,8 @@ var COMMS=[{sym:'GC=F',name:'黄金',dp:2},{sym:'SI=F',name:'白银',dp:3},{sym:
 function mkCard(info,d){
   if(!d)return '<div class="card"><div class="idx-flag">'+info.name+'</div><div class="idx-val flat" style="font-size:16px;margin-top:8px">获取失败</div></div>';
   var c=cls(d.pct);var arrow=c==='up'?'▲':c==='down'?'▼':'—';
-  var barColor=c==='up'?'linear-gradient(90deg,#a7f3d0,#34d399)':c==='down'?'linear-gradient(90deg,#fca5a5,#f87171)':'#e5e7eb';
-  return '<div class="card '+c+'-bg"><div class="idx-flag"><span style="font-size:10px;color:#9ca3af">'+info.name+'</span></div><div class="idx-val">'+fmt(d.price,info.dp)+'</div><span class="idx-chg '+c+'">'+arrow+' '+sgn(d.chg)+fmt(d.chg,info.dp)+' ('+sgn(d.pct)+fmt(d.pct,2)+'%)</span><div class="idx-prev">昨收 '+fmt(d.prev,info.dp)+'</div><div class="idx-bar" style="background:'+barColor+'"></div></div>';
+  var barColor=c==='up'?'var(--up)':c==='down'?'var(--down)':'var(--flat)';
+  return '<div class="card '+c+'-bg"><div class="idx-flag">'+info.name+'</div><div class="idx-val">'+fmt(d.price,info.dp)+'</div><span class="idx-chg '+c+'">'+arrow+' '+sgn(d.chg)+fmt(d.chg,info.dp)+' ('+sgn(d.pct)+fmt(d.pct,2)+'%)</span><div class="idx-prev">昨收 '+fmt(d.prev,info.dp)+'</div><div class="idx-bar" style="background:'+barColor+'"></div></div>';
 }
 
 function loadIndices(){return Promise.allSettled(INDICES.map(function(i){return fetchY(i.sym);})).then(function(res){document.getElementById('idxGrid').innerHTML=INDICES.map(function(i,x){return mkCard(i,res[x].status==='fulfilled'?res[x].value:null);}).join('');});}
@@ -577,7 +577,7 @@ function loadCommodities(){
     var vd=res[4].status==='fulfilled'?res[4].value:null;
     var vixHtml='';
     if(!vd){vixHtml='<div class="card vix-card"><div class="idx-flag">恐慌指数 VIX</div><div class="idx-val flat" style="font-size:16px;margin-top:8px">获取失败</div></div>';}
-    else{var v=vd.price;var level=v<15?'低恐慌':v<25?'中等':v<35?'高恐慌':'极度恐慌';var lvlCls=v<15?'vix-low':v<25?'vix-mid':'vix-high';var c=cls(vd.pct);var arrow=c==='up'?'▲':c==='down'?'▼':'—';vixHtml='<div class="card vix-card '+c+'-bg"><div class="idx-flag"><span style="font-size:10px;color:#9ca3af">恐慌指数 VIX</span></div><div class="idx-val">'+fmt(v,2)+'</div><span class="idx-chg '+c+'">'+arrow+' '+sgn(vd.chg)+fmt(vd.chg,2)+' ('+sgn(vd.pct)+fmt(vd.pct,2)+'%)</span><div class="vix-level '+lvlCls+'">'+level+'</div></div>';}
+    else{var v=vd.price;var level=v<15?'低恐慌':v<25?'中等':v<35?'高恐慌':'极度恐慌';var lvlCls=v<15?'vix-low':v<25?'vix-mid':'vix-high';var c=cls(vd.pct);var arrow=c==='up'?'▲':c==='down'?'▼':'—';vixHtml='<div class="card vix-card '+c+'-bg"><div class="idx-flag"><span style="font-size:10px;color:var(--text3)">恐慌指数 VIX</span></div><div class="idx-val">'+fmt(v,2)+'</div><span class="idx-chg '+c+'">'+arrow+' '+sgn(vd.chg)+fmt(vd.chg,2)+' ('+sgn(vd.pct)+fmt(vd.pct,2)+'%)</span><div class="vix-level '+lvlCls+'">'+level+'</div></div>';}
     document.getElementById('cmdGrid').innerHTML=cmdHtml+vixHtml;
   });
 }
@@ -679,9 +679,9 @@ function setBreadthCard(d,cached){
     +'<div class="flow-lbl">涨跌家数</div>'
     +tag
     +'<div style="display:flex;align-items:baseline;gap:12px;margin:2px 0">'
-    +'<span style="font-size:26px;font-weight:700;color:var(--up);font-family:'DM Mono',monospace">▲'+d.up+'</span>'
-    +'<span style="font-size:26px;font-weight:700;color:var(--down);font-family:'DM Mono',monospace">▼'+d.down+'</span>'
-    +(d.flat?'<span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">'+d.flat+'</span>':'')
+    +'<span style="font-size:26px;font-weight:700;color:var(--up);font-family:\"DM Mono\",monospace">▲'+d.up+'</span>'
+    +'<span style="font-size:26px;font-weight:700;color:var(--down);font-family:\"DM Mono\",monospace">▼'+d.down+'</span>'
+    +(d.flat?'<span style="font-size:12px;color:var(--text3);font-family:monospace">'+d.flat+'</span>':'')
     +'</div>'
     +'<div class="flow-sub">上涨占比 '+upPct+'%</div>'
     +'<div class="flow-track"><div class="flow-fill" style="width:'+upPct+'%;background:var(--up)"></div></div>';
@@ -708,7 +708,7 @@ function loadMargin(){
     }).catch(function(){return loadCache('margin').then(function(c){renderMargin(c,true);});});
 }
 function renderMargin(d,fromCache){
-  var tag=(fromCache&&d)?'<span style="font-size:9px;color:#9ca3af;margin-left:4px">最新</span>':'';
+  var tag=(fromCache&&d)?'<span style="font-size:9px;color:var(--text3);margin-left:4px">最新</span>':'';
   var items=[{l:'融资余额',dot:'#f59e0b',v:d?d.rz:null},{l:'融券余额',dot:'#ef4444',v:d?d.rq:null},{l:'融资融券合计',dot:'#8b5cf6',v:d?d.tot:null}];
   document.getElementById('marginGrid').innerHTML=items.map(function(f){return '<div class="card"><div class="flow-lbl" style="color:var(--text3)">'+f.l+tag+'</div><div class="flow-val" style="color:var(--text);font-family:\"DM Mono\",monospace;font-size:20px">'+(f.v==null?'<span style="color:var(--text3)">--</span>':fmt(f.v/100000000,0)+'<span style="font-size:12px;color:var(--text3)"> 亿</span>')+'</div><div class="flow-sub" style="font-family:\"DM Mono\",monospace">'+(f.v==null?'暂无数据':'余额数据')+'</div></div>';}).join('');
 }
